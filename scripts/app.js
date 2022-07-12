@@ -15,7 +15,7 @@ firebase.auth().onAuthStateChanged((user) =>{
 
     //you are logged setInterval(function () {
     playerId = user.uid;
-    playerRef = firebase.database().ref(`players/${playerId}``);
+    playerRef = firebase.database().ref(`players/${playerId}`);
 
     playerRef.set({
       id:playerId,

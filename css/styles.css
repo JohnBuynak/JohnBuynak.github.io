@@ -15,6 +15,10 @@ border: thin solid black;
   text-align: center;
 }
 
+.head h3{
+  text-align: center;
+}
+
 .buttonNav{
   color:#414141;
   background-color: #7253a3;
