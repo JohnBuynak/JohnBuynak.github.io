@@ -11,6 +11,10 @@ padding:50px;
 border: thin solid black;
 }
 
+.head h1{
+  text-align: center;
+}
+
 .buttonNav{
   color:#414141;
   background-color: #7253a3;

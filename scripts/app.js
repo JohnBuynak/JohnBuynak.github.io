@@ -9,8 +9,10 @@ let playerId;
 let playerRef;
 
 firebase.auth().onAuthStateChanged((user) =>{
-  console.log(user)
+  console.log("FIREBASE AUTH, ON AUTH STATE CHANGED")
   if(user){
+    console.log(user.uid)
+
     //you are logged setInterval(function () {
     playerId = user.uid;
     playerRef = firebase.database().ref('players/${playerId}');
@@ -23,6 +25,7 @@ firebase.auth().onAuthStateChanged((user) =>{
 
     })
     }else{
+      console.log("FIREBASE AUTH, FAILED TO AUTHORIZE")
       //logged out
     }
 })
