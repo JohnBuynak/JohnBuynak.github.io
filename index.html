@@ -3,28 +3,63 @@
   <head>
     <title>GitHub Pages</title>
     <link rel = "stylesheet" type = "text/css" href="css/styles.css">
+    <link rel = "stylesheet" type = "text/css" href="css/buttons.css">
+    <link rel = "stylesheet" type = "text/css" href="css/gif.css">
   </head>
 
   <div class="sidenav">
 
-  <a href="#">About</a>
-  <a href="#">Services</a>
+  <a href="">Home</a>
+  <a href="page/keepitred.html">Keep it Red</a>
   <a href="page/examplehtml.html">Sample HTML</a>
   <a href="page/samplepage.html">Contact</a>
   </div>
 
-  <div class = "head">
+  <div id = "headDiv" class = "head">
     <body>
+
       <h1>Home Page</h1>
       <p>
         <h3>Welcome!</h3>
       </p>
+
+      <button class = "button-12" onclick="hideGiphy()">Show / Hide Gifs</button>
+
+      <script>
+
+      function hideGiphy(){
+        var x = document.getElementById("giphyDiv");
+
+          if (x.style.display === "none") {
+              x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+      }
+
+      </script>
+
     </body>
+
+      <br>
+
+
+<div id = "giphyDiv">
+
+    <body >
+      <iframe src="https://giphy.com/embed/RgzryV9nRCMHPVVXPV" width="480" height="480" frameBorder="0"
+      class="giphy-embed" allowFullScreen></iframe>
+    </body>
+</div>
+
+
 
     <body>
-
-
+      <script scr="script/index.js">
+        //
+      </script>
     </body>
+
 
   </div>
 

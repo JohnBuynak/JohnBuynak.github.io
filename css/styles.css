@@ -44,3 +44,17 @@ border: thin solid black;
 .sidenav a:hover {
   color: #f1f1f1;
 }
+
+/* Style page content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
+}
+
+.giphyDiv iframe{
+  border: thin solid yellow;
+}
+
+.giphyDiv body:hover{
+
+}
