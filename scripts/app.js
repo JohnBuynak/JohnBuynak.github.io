@@ -5,6 +5,8 @@
 
 (function(){
 
+let playerId;
+let playerRef;
 
 firebase.auth().onAuthStateChanged((user) =>{
   console.log(user)
