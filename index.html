@@ -1,73 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>GitHub Pages</title>
-    <link rel = "stylesheet" type = "text/css" href="css/styles.css">
-    <link rel = "stylesheet" type = "text/css" href="css/buttons.css">
-    <link rel = "stylesheet" type = "text/css" href="css/gif.css">
-  </head>
 
-  <div class="sidenav">
+<head>
 
-  <a href="">Home</a>
-  <a href="page/keepitred.html">Keep it Red</a>
-  <a href="page/examplehtml.html">Sample HTML</a>
-  <a href="page/samplepage.html">Contact</a>
-  </div>
+  <title>Keep it Red</title>
+  <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css" type="text/css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+</head>
 
 
 
-  <div id = "headDiv" class = "head">
-
-    <body>
-      <h1>This is a Computer Virus!</h1>
-      <p>
-        <h3>Enter at your own risk!</h3>
-      </p>
-
-      <button class = "button-12" onclick="hideGiphy()">Show / Hide Gifs</button>
-
-      <script>
-
-      function hideGiphy(){
-        var x = document.getElementById("giphyDiv");
-
-          if (x.style.display === "none") {
-              x.style.display = "block";
-          } else {
-            x.style.display = "none";
-          }
-      }
-
-      </script>
-
-    </body>
-
-      <br>
+<body>
 
 
-<div id = "giphyDiv">
+  <span id="spanOne"> 
+    <b class="title"> Keep it </b>
+    <b class = "titleRed" id="titleColor">Red</b>
+  </span>
 
-    <body >
-
-      <iframe src="gifs/wireframe.gif" width="500" height="500" frameBorder="0"
-      class="giphy-embed" allowFullScreen></iframe>
-    </body>
-</div>
+  <a href="/play.html" class="button">Play</a>
 
 
 
-    <body>
-      <script scr="script/index.js">
-        //
-      </script>
-    </body>
+<!-- -->
 
 
-  </div>
+
+
+<!-- 
+<script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"> </script>
+<script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"> </script>
+<script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"> </script>
+<script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"> </script>
+
+
+  <script>
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDz9TYG4VBnNB6PN6V5ksHiQF_Oq9fG7-c",
+    authDomain: "keepitred.firebaseapp.com",
+    databaseURL: "https://keepitred-default-rtdb.firebaseio.com",
+    projectId: "keepitred",
+    storageBucket: "keepitred.appspot.com",
+    messagingSenderId: "231268394819",
+    appId: "1:231268394819:web:d9c8e87613f9d6146eb1f6",
+    measurementId: "G-T5HC0BTM3Z"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+
+</script>
+
+-->
+
+
+<script src = "app.js"></script>
 
 
 
 
 
+</body>
 </html>

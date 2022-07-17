@@ -1,0 +1,483 @@
+
+*{
+  box-sizing: border-box;
+}
+
+
+html{
+  display: table;
+  margin: 0;
+  padding:0;
+  width: 100%;
+  height: 100%;
+  background-attachment: fixed;
+  background-repeat:no-repeat;
+  background-size: cover;
+  background: linear-gradient(45deg, #8344fc -80%, #9aa1ff 70%, #2a65ff 125%);
+  /* background: radial-gradient(#8344fc -80%, #9aa1ff 70%, #2a65ff 125%);
+  -155deg, #202020 0%, #101010 100%
+  45deg, #8344fc -80%, #9aa1ff 70%, #2a65ff 125%*/
+
+  font-family: 'Mukta', sans-serif;
+  justify-content: center;
+  align-items: center;
+}
+
+.title{
+  font-size: 10rem;
+  text-align: center;
+  position: static;
+  color: #c21240;
+}
+
+
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes changeColor {
+  0%   {color: #c21240;}
+  40%   {color: #c21240;}
+  55%  {color: rgb(255, 145, 0);}
+  70%  {color: yellow;}
+  85%  {color: green;}
+  100% {color: blue;}
+}
+
+/* Standard syntax */
+@keyframes changeColor {
+  0%   {color: #c21240;}
+  40%   {color: #c21240;}
+  55%  {color: rgb(255, 145, 0);}
+  70%  {color: yellow;}
+  85%  {color: green;}
+  100% {color: blue;}
+}
+
+
+.colorChanger {
+  font-size: 228px;
+  text-align: center;
+  -webkit-animation: changeColor 15s; 
+  animation: changeColor 15s;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+}
+
+
+
+
+
+
+@keyframes changeColorRed {
+  0%   {color: #c21240;}
+  40%   {color: #b1133d;}
+  100%  {color: #971d3e;}
+}
+
+.titleRed{
+  font-size: 10rem;
+  text-align: center;
+  color: #c21240;
+  animation: changeColorRed 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes changeColorBlue {
+  0%   {color: #4625db;}
+  40%   {color: #3617c0;}
+  100%  {color: #240c8f;}
+}
+
+.titleBlue{
+  font-size: 10rem;
+  text-align: center;
+  color: #4625db;
+  
+  animation: changeColorBlue 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes changeColorYellow {
+  0%   {color: #f9fd1c;}
+  40%   {color: #e9da0c;}
+  100%  {color: #dbcd0a;}
+}
+
+.titleYellow{
+  font-size: 10rem;
+  text-align: center;
+  color: #fdee1c;
+
+  animation: changeColorYellow 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes changeColorGreen {
+  0%   {color: #26a50d;}
+  40%   {color: #269410;}
+  100%  {color: #248b0f;}
+}
+
+.titleGreen{
+  font-size: 10rem;
+  text-align: center;
+  color: #26a50d;
+
+  animation: changeColorGreen 3s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+
+
+
+
+
+
+#spanOne{
+  display: table;
+  margin: 0 auto;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardSvg{
+  width: 100px;
+   height: 100px;
+}
+
+.cardRect{
+  stroke:black;
+}
+
+.scroller {
+  
+  bottom: 0px;
+  position:inherit;
+  display: block;
+  align-items: center;
+  background-color: #dba9ff22;
+  overflow-x: scroll;
+  overflow-y: visible;
+  margin-top: 5rem;
+  white-space: nowrap;
+  height: 35%;
+  width: 100%;
+}
+
+.scroller :hover{
+  cursor: grab;
+}
+
+.scroller :-webkit-scrollbar-thumb {
+  background-color: red;
+  border-right: none;
+  border-left: none;
+}
+
+
+.game-container{
+  
+  background: #dba97f22;
+  position: absolute;
+  top: 40px;
+  bottom: 0px;
+  left: 0px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+.gameBoard{
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+
+.cardImage{
+  display: inline;
+  position: relative;
+  z-index: 1;
+  left: 0px;
+
+  margin-top: 20px;
+  width: 80px;
+  height: 80px;
+}
+
+
+
+
+
+
+
+.text {
+  font-size: 2rem;  
+  font-weight: bold;
+  -webkit-text-stroke-width: 1px;
+}
+
+
+
+
+
+
+.button{
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  padding: 10px 20px;
+  height: 100px;
+  width: 20%;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #ec5537 -10%, #f83123 20%, #f76ef7 125%);
+  color: #fff;
+}
+
+.button:hover{
+  background: linear-gradient(145deg, #ec5537 -30%, #ec4646 60%, #e9afaf  95%);
+  transition: all 1.2s ease;
+}
+
+
+
+
+
+/* CSS */
+.button-88 {
+  display: block;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 20px;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: white;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgb(20, 157, 167) 0%, rgb(102, 247, 146) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-88:hover {
+  box-shadow: 0 0.5em 1.5em -0.5em #44a73e98;
+}
+
+.button-88:active {
+  box-shadow: 0 0.3em 1em -0.5em #d4a73e98;
+}
+
+
+
+
+
+.button-89red {
+  display: block;
+  width: 80px;
+  margin-left: auto;
+  margin-right: 0;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: white;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgb(243, 58, 11) 0%, rgb(124, 23, 5) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-89blue {
+  display: block;
+  width: 80px;
+  margin-left: auto;
+  margin-right: 0;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: white;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgb(43, 18, 134) 0%, rgb(54, 84, 253) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-89green {
+  display: block;
+  width: 80px;
+  margin-left: auto;
+  margin-right: 0;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: black;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgb(10, 95, 43) 0%, rgb(56, 233, 109) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-89yellow {
+  display: block;
+  width: 80px;
+  margin-left: auto;
+  margin-right: 0;
+  align-items: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 10px;
+  padding: 0.7em 1.4em 0.7em 1.1em;
+  color: black;
+  background: #ad5389;
+  background: linear-gradient(0deg, rgb(202, 199, 8) 0%, rgb(255, 230, 8) 100%);
+  border: none;
+  box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+  letter-spacing: 0.05em;
+  border-radius: 20em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* CSS */
+.button-10 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
+
+  color: #fff;
+  background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+   background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-10:focus {
+  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
+}
+
+
+
+
+
+/* Game Board Image Alignment */
+
+.img-wrap{
+  width: 200px;
+  height: 150px;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin: 0;
+}
+
+.div-img{
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.img-new{
+  display: block;
+  height: 100px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.img-orig{
+  width: 100px;
+  display: inline;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+
+
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+  float: left;
+  width: 40%;
+  padding: 5px;
+  margin-left: auto;
+  display: block;
+  
+}
+
+.columntop {
+  float: left;
+  width: 50%;
+  padding: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.row {
+  display: flex;
+}
+
+
