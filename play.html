@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="stylesheet" href="styles.css" type="text/css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,11 +16,11 @@
 
 
     <div class="gameBoard">
-        
+
     </div>
 
-    
-    
+
+
 <div class = "game-container" id="game-container">
 
 
@@ -30,31 +30,31 @@
             <img src="images/pawn.png" alt="" class="img-new">
             <b style="text-align: center;">John</b>
         </div>
-        
-    
+
+
         <div class="row">
             <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
             <img src="images/pawn.png" alt="" class="img-new">
             <b style="text-align: center;">John</b>
         </div>
-    
+
         <div class="row">
             <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
             <img src="images/pawn.png" alt="" class="img-new">
             <b style="text-align: center;">John</b>
         </div>
-    
-    
+
+
         <div class="row">
             <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
             <img src="images/pawnwhite.png" alt="" class="img-new">
             <b style="text-align: center;">Jessica</b>
         </div>
-        
-        
+
+
       </div>
 
-    
+
   <div class="column">
 
     <div class="row">
@@ -62,24 +62,49 @@
     </div>
 
         <div class="row"><button class="button-88" id="drawButton">Draw</button></div>
-        
+
         <div id="colorPicker">
             <button class="button-89red" id="pickred">Red</button>
             <button class="button-89blue" id="pickblue">Blue</button>
             <button class="button-89green" id="pickgreen">Green</button>
             <button class="button-89yellow" id="pickyellow">Yellow</button>
         </div>
-    
+
   </div>
 
 
-    <div class="scroller" id="scroller">  
+    <div class="scroller" id="scroller">
     </div>
 
-    
+
 
 </div>
 
 </body>
 <script src="/game.js"></script>
+
+
+
+
+<script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"> </script>
+      <script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"> </script>
+      <script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"> </script>
+      <script src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"> </script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDmVBnyFHPH0b9RBs26j_DZ9JhFMAmf09Y",
+        authDomain: "keep-it-red.firebaseapp.com",
+        databaseURL: "https://keep-it-red-default-rtdb.firebaseio.com",
+        projectId: "keep-it-red",
+        storageBucket: "keep-it-red.appspot.com",
+        messagingSenderId: "978531012027",
+        appId: "1:978531012027:web:42da4349bd440585de889e",
+        measurementId: "G-96X36H1KX8"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      //const app = getAnalytics(app);
+    </script>
 </html>

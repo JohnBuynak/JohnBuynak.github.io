@@ -1,3 +1,141 @@
+function randomFromArray(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+
+  function createName() {
+    const prefix = randomFromArray([
+        "JACKED",
+        "DIRTY",
+        "BASTARD",
+        "DEGENERATE",
+        "LAME",
+        "LUMPY",
+        "FAT",
+        "UGLY",
+        "LARDASS",
+        "DUMB",
+        "CHINESE",
+        "TURD",
+      "COOL",
+      "SUPER",
+      "HIP",
+      "SMUG",
+      "COOL",
+      "SILKY",
+      "GOOD",
+      "SAFE",
+      "DEAR",
+      "DAMP",
+      "WARM",
+      "RICH",
+      "LONG",
+      "DARK",
+      "SOFT",
+      "BUFF",
+      "DOPE",
+    ]);
+    const animal = randomFromArray([
+        "MUSKRAT",
+        "TURTLE",
+        "CHIPMUNK",
+        "TOAD",
+        "HIPPO",
+      "BEAR",
+      "DOG",
+      "CAT",
+      "FOX",
+      "LAMB",
+      "LION",
+      "BOAR",
+      "GOAT",
+      "VOLE",
+      "SEAL",
+      "PUMA",
+      "MULE",
+      "BULL",
+      "BIRD",
+      "BUG",
+    ]);
+    return `${prefix} ${animal}`;
+  }
+
+
+
+
+
+
+
+
+  (function(){
+
+    let playerId;
+    let playerRef;
+    
+    
+    function initGame(){
+    
+    
+    }
+    
+    firebase.auth().onAuthStateChanged((user) =>{
+      console.log("FIREBASE AUTH, ON AUTH STATE CHANGED")
+      if(user){
+        console.log(user.uid)
+    
+        //you are logged setInterval(function () {
+        playerId = user.uid;
+        playerRef = firebase.database().ref(`players/${playerId}`);
+    
+        playerRef.set({
+          id:playerId,
+          name:"",
+          cards:"r4",
+          score:0
+    
+        })
+    
+        //Remove Player from firebase when they disconnect
+        playerRef.onDisconnect().remove();
+    
+        //Begin the game
+        initGame();
+    
+    
+        }else{
+          console.log("FIREBASE AUTH, FAILED TO AUTHORIZE")
+          //logged out
+        }
+    })
+    
+    firebase.auth().signInAnonymously().catch((error) =>{
+      var errorCode = error.code;
+      var errorMessage = error.message;
+    
+      console.log(errorCode,errorMessage);
+    });
+    
+    })();
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Game {
     constructor() {
 
@@ -9,7 +147,7 @@ class Game {
     addPlayer(player){
         this.players.push(player);
     }
-    
+
   }
 
 
@@ -26,7 +164,7 @@ class Game {
   }
 
   class Card{
-    
+
     //1-9
     //skip
     //reverse
@@ -39,12 +177,12 @@ class Game {
     //dump 3 -> everyone draws three cards including player, player picks a color, next player is not skipped
 
     constructor(forceNumber=false, forceBlank = false){
-        
+
         if(!forceBlank){
             if(!forceNumber){
                 let randomNumber = Math.random();
                 this.type = "";
-        
+
                 if(randomNumber <= 0.50){
                     this.type = "number";
                 }else if(randomNumber <= 0.62){
@@ -68,20 +206,20 @@ class Game {
             }else{
                 this.color = "multi";
             }
-    
+
             if(this.type == "number"){
                 let numbers = ["1","2","3","4","5","6","7","8","9"]
                 this.type = numbers[getRandomInt(9)];
             }
         }else{
             this.type = "blank";
-            
+
         }
 
         this.id = "0";
-        
-    
-        
+
+
+
     }
 
     getCard(){
@@ -103,24 +241,24 @@ document.getElementById("addButton").onclick = function(){
     //console.log(game.players);
     console.clear();
     for(let i = 0; i < game.players.length; i++){
-        
+
         console.log(game.players[i].uid);
     }
-    
+
 }
 */
 
 function showColorPicker(){
     var x = document.getElementById("colorPicker");
-  
-      
+
+
         x.style.display = "block";
-      
+
   }
 
   function hideColorPicker(){
     var x = document.getElementById("colorPicker");
-  
+
         x.style.display = "none";
   }
 
@@ -145,13 +283,13 @@ document.getElementById("gameboardcard").onclick = function(){
             showColorPicker();
 
         }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
-            
+
             gameboardcard = selectedCard;
             updateGameCard();
             removeCard(selectedId);
         }
     }
-    
+
 }
 
 
@@ -243,7 +381,7 @@ document.getElementById("drawButton").onclick = function(){
         //console.log(card.color, card.type);
         let currentCard = cardCollection[i];
         let imageSource = "/images/" + currentCard.getCard() + ".png"
-        
+
         var newCard = document.createElement("img");
         newCard.className = "cardImage";
         newCard.src = imageSource;
@@ -262,26 +400,26 @@ document.getElementById("drawButton").onclick = function(){
             hideColorPicker();
             console.log(selectedCard);
         }
-    
-        
+
+
         document.getElementById("scroller").appendChild(newCard);
     }
 
-    
+
 */
 
-    
+
     //Original:
 
     console.log(card.color, card.type);
 
     let imageSource = "/images/" + card.getCard() + ".png"
-    
+
     let newCard = document.createElement("img");
     newCard.className = "cardImage";
     newCard.src = imageSource;
     newCard.style.marginRight ="-40px";
-    
+
     newCard.id = document.getElementById("scroller").children.length.toString();
     card.id = newCard.id;
 
@@ -309,9 +447,7 @@ document.getElementById("drawButton").onclick = function(){
         console.log(selectedCard);
     }
 
-    
+
     document.getElementById("scroller").appendChild(newCard);
-    
+
 }
-
-
