@@ -163,6 +163,8 @@ class Game {
     return Math.floor(Math.random() * max);
   }
 
+
+
   class Card{
 
     //1-9
@@ -230,7 +232,12 @@ class Game {
 
 
 
+
+
 const game = new Game();
+
+
+
 
 
 
@@ -248,6 +255,11 @@ document.getElementById("addButton").onclick = function(){
 }
 */
 
+
+
+
+//COLOR PICKER for draw4 and draw3
+
 function showColorPicker(){
     var x = document.getElementById("colorPicker");
 
@@ -262,21 +274,31 @@ function showColorPicker(){
         x.style.display = "none";
   }
 
-  hideColorPicker();
+ 
 
+  //change card on game board
 
-var gameboardcard = new Card(forceNumber=true);
-var selectedCard = undefined;
-
-updateGameCard();
-
-function updateGameCard(){
+  function updateGameCard(){
     document.getElementById("gameboardcard").src = "/images/" + gameboardcard.getCard() + ".png"
 }
 
 
 
 
+var gameboardcard = new Card(forceNumber=true);
+var selectedCard = undefined;
+
+updateGameCard();
+hideColorPicker();
+
+
+
+
+
+
+//Click on Game Board Card
+//Play selected card
+//remove selected card
 document.getElementById("gameboardcard").onclick = function(){
     if(selectedCard != undefined){
         if(selectedCard.color == "multi"){
@@ -294,6 +316,7 @@ document.getElementById("gameboardcard").onclick = function(){
 
 
 
+//COLOR PICKER Buttons
 
 document.getElementById("pickred").onclick = function(){
     document.getElementById("gameboardcard").src = "/images/redblank.png"
@@ -339,13 +362,17 @@ var selectedId = "";
 
 
 function removeCard(id){
+    
+    console.log(document.getElementById(id));
+    document.getElementById("scroller").removeChild(document.getElementById(id));
+    selectedCard = undefined;
+
+
     //const collection =  document.getElementsByClassName("cardImage");
 
     //const collection =  document.getElementById("scroller").children;
     //console.log(collection);
     //document.getElementById("scroller").removeChild(collection[childNodeNumber]);
-
-
 
     /*
     let x = document.getElementById("scroller").children.length -1;
@@ -356,10 +383,6 @@ function removeCard(id){
     console.log(document.getElementById("scroller").children);
     document.getElementById("scroller").removeChild(c);
     */
-
-    console.log(document.getElementById(id));
-    document.getElementById("scroller").removeChild(document.getElementById(id));
-    selectedCard = undefined;
 }
 
 
@@ -370,46 +393,6 @@ document.getElementById("drawButton").onclick = function(){
     let card = new Card();
     cardCollection.push(card);
     console.log(cardCollection);
-
-    /*
-    let childNodes = document.getElementById("scroller").childNodes
-    for(let i =0; i < childNodes; i++){
-        document.getElementById("scroller").removeChild(childNodes[i])
-    }
-
-    for(let i =0; i < cardCollection; i++){
-        //console.log(card.color, card.type);
-        let currentCard = cardCollection[i];
-        let imageSource = "/images/" + currentCard.getCard() + ".png"
-
-        var newCard = document.createElement("img");
-        newCard.className = "cardImage";
-        newCard.src = imageSource;
-        newCard.style.marginRight ="-40px";
-
-        newCard.onclick = function(){
-            const collection =  document.getElementsByClassName("cardImage");
-            console.clear();
-            for(let j = 0; j < collection.length; j++){
-                collection[j].style.top = "0px"
-                collection[j].style.zIndex = j.toString();
-                //console.log(collection[i].style.zIndex);
-            }
-            newCard.style.top = "-20px"
-            selectedCard = currentCard;
-            hideColorPicker();
-            console.log(selectedCard);
-        }
-
-
-        document.getElementById("scroller").appendChild(newCard);
-    }
-
-
-*/
-
-
-    //Original:
 
     console.log(card.color, card.type);
 
@@ -445,6 +428,22 @@ document.getElementById("drawButton").onclick = function(){
 
         hideColorPicker();
         console.log(selectedCard);
+
+
+
+        
+        //From Game Board Card On Click:
+        if(selectedCard != undefined){
+            if(selectedCard.color == "multi"){
+                showColorPicker();
+    
+            }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
+    
+                gameboardcard = selectedCard;
+                updateGameCard();
+                removeCard(selectedId);
+            }
+        }
     }
 
 
