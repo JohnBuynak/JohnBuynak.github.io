@@ -487,3 +487,8 @@ html{
   height: 40px; 
   text-align: center;
 }
+
+.Character_name{
+  position: relative;
+  display: block;
+}

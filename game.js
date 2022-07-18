@@ -100,21 +100,84 @@ function randomFromArray(array) {
             //playerRef.set(players[playerId]);
         }
     
-        
+        function updateCCDB(){
+            players[playerId].cards =cardCollection;
+            playerRef.set(players[playerId]);
+            console.log("CARD COLLECTION UPDATED")
+        }
 
         document.getElementById("drawButton").onclick = function(){
 
             drawCard();
             //CLEAN
-            players[playerId].cards =cardCollection;
-            playerRef.set(players[playerId]);
+            updateCCDB();
+        }
+
+
+        document.getElementById("gameboardcard").onclick = function(){
+            
+            if(selectedCard != undefined){
+                if(selectedCard.color == "multi"){
+                    showColorPicker();
+                    
+                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
+        
+                    gameboardcard = selectedCard;
+                    updateGameCard();
+                    removeCard(selectedId);
+                    updateCCDB();
+                }
+            }
+        
+        }
+        
+        
+        
+        //COLOR PICKER Buttons
+        
+        document.getElementById("pickred").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/redblank.png"
+            gameboardcard = new Card(forceBlank=true);
+            gameboardcard.color = "red";
+            hideColorPicker();
+            removeCard(selectedId);
+            console.log(gameboardcard);
+            updateCCDB();
+        }
+        document.getElementById("pickblue").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/blueblank.png"
+            gameboardcard = new Card(forceBlank=true);
+            gameboardcard.color = "blue";
+            hideColorPicker();
+            removeCard(selectedId);
+            console.log(gameboardcard);
+            updateCCDB();
+        }
+        document.getElementById("pickyellow").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/yellowblank.png"
+            gameboardcard = new Card(forceBlank=true);
+            gameboardcard.color = "yellow";
+            hideColorPicker();
+            removeCard(selectedId);
+            console.log(gameboardcard);
+            updateCCDB();
+        }
+        document.getElementById("pickgreen").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/greenblank.png"
+            gameboardcard = new Card(forceBlank=true);
+            gameboardcard.color = "green";
+            hideColorPicker();
+            removeCard(selectedId);
+            console.log(gameboardcard);
+            updateCCDB();
         }
 
 
 
 
 
-        
+
+
 
         const allPlayersRef = firebase.database().ref(`players`);
         //const allCoinsRef = firebase.database().ref(`coins`);
@@ -168,8 +231,9 @@ function randomFromArray(array) {
             
             characterElement.innerHTML = (`
                 <b class="cardNumberText">2</b>
-                <div style="width:25%">
-                <img src="images/pawn.png" alt="" class="img-new"></div>
+                <div style="width:35%">
+                <img src="images/pawn.png" alt="" class="img-new">
+                </div>
                 <div style="width:50%; display: table;"> <b class="Character_name" 
                 style="text-align: center;">John</b></div>
         `);
@@ -418,60 +482,6 @@ hideColorPicker();
 
 
 
-//Click on Game Board Card
-//Play selected card
-//remove selected card
-document.getElementById("gameboardcard").onclick = function(){
-    if(selectedCard != undefined){
-        if(selectedCard.color == "multi"){
-            showColorPicker();
-
-        }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
-
-            gameboardcard = selectedCard;
-            updateGameCard();
-            removeCard(selectedId);
-        }
-    }
-
-}
-
-
-
-//COLOR PICKER Buttons
-
-document.getElementById("pickred").onclick = function(){
-    document.getElementById("gameboardcard").src = "/images/redblank.png"
-    gameboardcard = new Card(forceBlank=true);
-    gameboardcard.color = "red";
-    hideColorPicker();
-    removeCard(selectedId);
-    console.log(gameboardcard);
-}
-document.getElementById("pickblue").onclick = function(){
-    document.getElementById("gameboardcard").src = "/images/blueblank.png"
-    gameboardcard = new Card(forceBlank=true);
-    gameboardcard.color = "blue";
-    hideColorPicker();
-    removeCard(selectedId);
-    console.log(gameboardcard);
-}
-document.getElementById("pickyellow").onclick = function(){
-    document.getElementById("gameboardcard").src = "/images/yellowblank.png"
-    gameboardcard = new Card(forceBlank=true);
-    gameboardcard.color = "yellow";
-    hideColorPicker();
-    removeCard(selectedId);
-    console.log(gameboardcard);
-}
-document.getElementById("pickgreen").onclick = function(){
-    document.getElementById("gameboardcard").src = "/images/greenblank.png"
-    gameboardcard = new Card(forceBlank=true);
-    gameboardcard.color = "green";
-    hideColorPicker();
-    removeCard(selectedId);
-    console.log(gameboardcard);
-}
 
 
 var cardCollection = [];
@@ -497,6 +507,7 @@ function removeCard(id){
     }
 
     cardCollection.forEach(f2);
+    
 
 }
 
