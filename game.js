@@ -71,7 +71,7 @@ function randomFromArray(array) {
 
 
 
-
+var numberOfPlayers = 0;
 
 
 
@@ -82,6 +82,8 @@ function randomFromArray(array) {
     let players = {}; //local list of state
     let playerElements = {};
 
+    let gameRef; //firebase game ref
+
     const gameContainer = document.querySelector(".game-container");
     const playerContainer = document.querySelector("#chairs");
     const playerNameInput = document.querySelector("#player-name");
@@ -91,8 +93,9 @@ function randomFromArray(array) {
 
     function initGame(){
 
+        //players[playerId].time = Date.now();
+        //playerRef.set(players[playerId]);
 
-        
         //INITIAL DRAW
         for(let i = 0; i < 5; i++){
             drawCard();
@@ -199,11 +202,16 @@ function randomFromArray(array) {
 
 
         allPlayersRef.on("child_added", (snapshot)=>{
+
+            numberOfPlayers += 1;
+            console.log(`NUMBER OF PLAYERS:${numberOfPlayers}`)
+            //gameRef.set
+
             //fires whenever a new node is added
             //new to me, if i join late everyone is new to me
             const addedPlayer = snapshot.val();
-
-
+            
+            console.log(addedPlayer);
 
             //to be cleaned:
             const characterElement = document.createElement("div");
@@ -251,7 +259,14 @@ function randomFromArray(array) {
                 })
 
 
-                
+
+
+            //Remove DOM element
+            allPlayersRef.on("child_removed", (snapshot)=>{
+                const removedKey = snapshot.val().id;
+                playerContainer.removeChild(playerElements[removedKey]);
+                delete playerElements[removedKey];
+            })
 
 
 
@@ -267,21 +282,30 @@ function randomFromArray(array) {
         playerId = user.uid;
         playerRef = firebase.database().ref(`players/${playerId}`);
     
+
+        gameRef = firebase.database().ref(`game`);
+        //console.log(`gameRef/${gameStarted}`);
+
         //since variable name matches db
         const name = createName();
+
+        const time =  Date.now();
 
         playerRef.set({
           id:playerId,
           name,
           cards:[1,1,1,1,1],
           score:0,
-          chair:0
+          turn:false,
+          time
     
         })
     
         //Remove Player from firebase when they disconnect
         playerRef.onDisconnect().remove();
     
+       
+
         //Begin the game
         initGame();
         
@@ -507,14 +531,42 @@ function removeCard(id){
     }
 
     cardCollection.forEach(f2);
-    
+    updateCardMargins();
 
 }
 
 
 
+function updateCardMargins(){
+    let nCards = cardCollection.length;
+    let marginRight = "0px";
 
-//document.getElementById("drawButton").onclick = 
+    switch(true){
+        case(nCards <= 5):
+            marginRight = "5px";
+            break;
+        case(nCards <= 10):
+            marginRight = "-20px";
+            break;
+        case(nCards <= 15):
+            marginRight = "-30px";
+            break;
+        case(nCards <= 20):
+            marginRight = "-40px";
+            break;
+        case(nCards > 20):
+            marginRight = "-50px";
+            break;
+    }
+    const collection =  document.getElementsByClassName("cardImage");
+    
+        for(let i = 0; i < collection.length; i++){
+            collection[i].style.marginRight = marginRight;
+        }
+}
+
+
+
 function drawCard(){
     let card = new Card();
     cardCollection.push(card);
@@ -584,6 +636,9 @@ function drawCard(){
     document.getElementById("scroller").appendChild(newCard);
 
 
+    updateCardMargins();
+
+    /*
     let nCards = cardCollection.length;
     let marginRight = "0px";
 
@@ -609,5 +664,6 @@ function drawCard(){
         for(let i = 0; i < collection.length; i++){
             collection[i].style.marginRight = marginRight;
         }
+        */
 
 }
