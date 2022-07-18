@@ -82,7 +82,7 @@ var numberOfPlayers = 0;
     let players = {}; //local list of state
     let playerElements = {};
 
-    let gameRef; //firebase game ref
+    //let gameRef; //firebase game ref
 
     const gameContainer = document.querySelector(".game-container");
     const playerContainer = document.querySelector("#chairs");
@@ -184,9 +184,13 @@ var numberOfPlayers = 0;
 
         const allPlayersRef = firebase.database().ref(`players`);
         //const allCoinsRef = firebase.database().ref(`coins`);
+        const gameRef = firebase.database().ref(`game`);
         
         allPlayersRef.on("value", (snapshot)=>{
             //fires whenever a change occurs
+
+
+            updateGameCard();
 
             //if null set to empty object
             players = snapshot.val() || {};
@@ -269,6 +273,14 @@ var numberOfPlayers = 0;
             })
 
 
+            playerNameInput.addEventListener("change", (e)=>{
+                const newName = e.target.value || createName();
+                playerNameInput.value = newName;
+                playerRef.update({
+                    name:newName
+                });
+            })
+
 
 
     }
@@ -288,6 +300,7 @@ var numberOfPlayers = 0;
 
         //since variable name matches db
         const name = createName();
+        playerNameInput.value = name;
 
         const time =  Date.now();
 
