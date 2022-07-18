@@ -90,6 +90,32 @@ function randomFromArray(array) {
     
 
     function initGame(){
+
+
+        
+        //INITIAL DRAW
+        for(let i = 0; i < 5; i++){
+            drawCard();
+            //players[playerId].cards =cardCollection;
+            //playerRef.set(players[playerId]);
+        }
+    
+        
+
+        document.getElementById("drawButton").onclick = function(){
+
+            drawCard();
+            //CLEAN
+            players[playerId].cards =cardCollection;
+            playerRef.set(players[playerId]);
+        }
+
+
+
+
+
+        
+
         const allPlayersRef = firebase.database().ref(`players`);
         //const allCoinsRef = firebase.database().ref(`coins`);
         
@@ -103,7 +129,8 @@ function randomFromArray(array) {
             Object.keys(players).forEach((key)=>{
                 const characterState = players[key];
                 let el = playerElements[key];
-                //el.querySelector("")
+                el.querySelector(".Character_name").innerText = characterState.name;
+                el.querySelector(".cardNumberText").innerText = characterState.cards.length;
             })
         })
 
@@ -155,8 +182,12 @@ function randomFromArray(array) {
 
             //Fill in some initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
+            characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards.length;
             playerContainer.appendChild(characterElement);
                 })
+
+
+                
 
 
 
@@ -178,7 +209,7 @@ function randomFromArray(array) {
         playerRef.set({
           id:playerId,
           name,
-          cards:[],
+          cards:[1,1,1,1,1],
           score:0,
           chair:0
     
@@ -189,6 +220,8 @@ function randomFromArray(array) {
     
         //Begin the game
         initGame();
+        
+        
     
     
         }else{
@@ -291,7 +324,7 @@ class Game {
                 this.type = "number";
             }
 
-            if(this.type != "draw4" & this.type != "alldraw3"){
+            if(this.type != "draw4" && this.type != "alldraw3"){
                 let colors = ["red","blue","green","yellow"];
                 this.color = colors[getRandomInt(4)];
             }else{
@@ -393,7 +426,7 @@ document.getElementById("gameboardcard").onclick = function(){
         if(selectedCard.color == "multi"){
             showColorPicker();
 
-        }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
+        }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
 
             gameboardcard = selectedCard;
             updateGameCard();
@@ -470,10 +503,13 @@ function removeCard(id){
 
 
 
-
-document.getElementById("drawButton").onclick = function(){
+//document.getElementById("drawButton").onclick = 
+function drawCard(){
     let card = new Card();
     cardCollection.push(card);
+
+    
+
     console.log(cardCollection);
 
     console.log(card.color, card.type);
@@ -515,7 +551,7 @@ document.getElementById("drawButton").onclick = function(){
                 if(selectedCard.color == "multi"){
                     showColorPicker();
         
-                }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
+                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
         
                     gameboardcard = selectedCard;
                     updateGameCard();
@@ -562,4 +598,5 @@ document.getElementById("drawButton").onclick = function(){
         for(let i = 0; i < collection.length; i++){
             collection[i].style.marginRight = marginRight;
         }
+
 }
