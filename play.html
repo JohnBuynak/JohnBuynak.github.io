@@ -14,6 +14,17 @@
 </head>
 <body>
 
+    <div class="player-info">
+        <div>
+          <label for="player-name">Your Name</label>
+          <input id="player-name" maxlength="10" type="text" />
+
+          <button id="player-color" >Change Color</button>
+        </div>
+
+      </div>
+
+
 
     <div class="gameBoard">
 
@@ -21,35 +32,22 @@
 
 
 
-<div class = "game-container" id="game-container">
+<div class = "game-container" >
 
 
-    <div class="column">
-        <div class="row">
-            <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
-            <img src="images/pawn.png" alt="" class="img-new">
-            <b style="text-align: center;">John</b>
-        </div>
+    <div class="column" id="chairs">
 
 
         <div class="row">
-            <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
-            <img src="images/pawn.png" alt="" class="img-new">
-            <b style="text-align: center;">John</b>
-        </div>
-
-        <div class="row">
-            <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
-            <img src="images/pawn.png" alt="" class="img-new">
-            <b style="text-align: center;">John</b>
+            <b class="cardNumberText">2</b>
+            <div style="width:25%">
+                <img src="images/pawn.png" alt="" class="img-new"></div>
+                <div style="width:50%; display: table;"> <b style="text-align: center;">John</b></div>
+           
         </div>
 
 
-        <div class="row">
-            <b style="border: solid; width: 40px; height: 40px; text-align: center;">2</b>
-            <img src="images/pawnwhite.png" alt="" class="img-new">
-            <b style="text-align: center;">Jessica</b>
-        </div>
+        
 
 
       </div>
@@ -81,7 +79,7 @@
 </div>
 
 </body>
-<script src="/game.js"></script>
+
 
 
 
@@ -107,4 +105,7 @@
       firebase.initializeApp(firebaseConfig);
       //const app = getAnalytics(app);
     </script>
+
+
+<script src="/game.js"></script>
 </html>

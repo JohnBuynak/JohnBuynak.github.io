@@ -17,6 +17,8 @@ function randomFromArray(array) {
         "DUMB",
         "CHINESE",
         "TURD",
+        "BITCHIN'",
+        "SAGGY",
       "COOL",
       "SUPER",
       "HIP",
@@ -41,6 +43,12 @@ function randomFromArray(array) {
         "CHIPMUNK",
         "TOAD",
         "HIPPO",
+        "SHIT",
+        "ORC",
+        "BOOB",
+        "WHALE",
+        "PIG",
+        "FART",
       "BEAR",
       "DOG",
       "CAT",
@@ -55,7 +63,7 @@ function randomFromArray(array) {
       "MULE",
       "BULL",
       "BIRD",
-      "BUG",
+      "BUG"
     ]);
     return `${prefix} ${animal}`;
   }
@@ -69,13 +77,90 @@ function randomFromArray(array) {
 
   (function(){
 
-    let playerId;
-    let playerRef;
+    let playerId; //string of who you are logged in as 
+    let playerRef; //firebase ref
+    let players = {}; //local list of state
+    let playerElements = {};
+
+    const gameContainer = document.querySelector(".game-container");
+    const playerContainer = document.querySelector("#chairs");
+    const playerNameInput = document.querySelector("#player-name");
+    //const playerColorButton
     
     
+
     function initGame(){
-    
-    
+        const allPlayersRef = firebase.database().ref(`players`);
+        //const allCoinsRef = firebase.database().ref(`coins`);
+        
+        allPlayersRef.on("value", (snapshot)=>{
+            //fires whenever a change occurs
+
+            //if null set to empty object
+            players = snapshot.val() || {};
+
+
+            Object.keys(players).forEach((key)=>{
+                const characterState = players[key];
+                let el = playerElements[key];
+                //el.querySelector("")
+            })
+        })
+
+
+        allPlayersRef.on("child_added", (snapshot)=>{
+            //fires whenever a new node is added
+            //new to me, if i join late everyone is new to me
+            const addedPlayer = snapshot.val();
+
+
+
+            //to be cleaned:
+            const characterElement = document.createElement("div");
+            //characterElement.classList.add("Character", "grid-cell");
+            characterElement.classList.add("row");
+
+            //if (addedPlayer.id === playerId) {
+            //    characterElement.classList.add("you");
+            //}
+
+
+            
+            /*
+            characterElement.innerHTML = (`
+                <div class="Character_shadow grid-cell"></div>
+                <div class="Character_sprite grid-cell"></div>
+                <div class="Character_name-container">
+                <span class="Character_name"></span>
+                <span class="Character_coins">0</span>
+                </div>
+                <div class="Character_you-arrow"></div>
+            `);
+             */
+
+            
+            characterElement.innerHTML = (`
+                <b class="cardNumberText">2</b>
+                <div style="width:25%">
+                <img src="images/pawn.png" alt="" class="img-new"></div>
+                <div style="width:50%; display: table;"> <b class="Character_name" 
+                style="text-align: center;">John</b></div>
+        `);
+       
+        
+
+
+
+            playerElements[addedPlayer.id] = characterElement;
+
+            //Fill in some initial state
+            characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
+            playerContainer.appendChild(characterElement);
+                })
+
+
+
+
     }
     
     firebase.auth().onAuthStateChanged((user) =>{
@@ -87,11 +172,15 @@ function randomFromArray(array) {
         playerId = user.uid;
         playerRef = firebase.database().ref(`players/${playerId}`);
     
+        //since variable name matches db
+        const name = createName();
+
         playerRef.set({
           id:playerId,
-          name:"",
-          cards:"r4",
-          score:0
+          name,
+          cards:[],
+          score:0,
+          chair:0
     
         })
     
@@ -354,7 +443,6 @@ document.getElementById("pickgreen").onclick = function(){
 
 var cardCollection = [];
 var selectedCardNumber = 0;
-var childNodeNumber = 0;
 
 
 var selectedId = "";
@@ -368,21 +456,15 @@ function removeCard(id){
     selectedCard = undefined;
 
 
-    //const collection =  document.getElementsByClassName("cardImage");
+    function f2(item,index){
+        if(item.id == selectedId){
+            cardCollection.splice(index,1);
+            //delete cardCollection[index]
+        }
+    }
 
-    //const collection =  document.getElementById("scroller").children;
-    //console.log(collection);
-    //document.getElementById("scroller").removeChild(collection[childNodeNumber]);
+    cardCollection.forEach(f2);
 
-    /*
-    let x = document.getElementById("scroller").children.length -1;
-    let id = x.toString();
-    let c = document.getElementById(id);
-
-    console.log(id);
-    console.log(document.getElementById("scroller").children);
-    document.getElementById("scroller").removeChild(c);
-    */
 }
 
 
@@ -401,6 +483,10 @@ document.getElementById("drawButton").onclick = function(){
     let newCard = document.createElement("img");
     newCard.className = "cardImage";
     newCard.src = imageSource;
+
+
+    
+
     newCard.style.marginRight ="-40px";
 
     newCard.id = document.getElementById("scroller").children.length.toString();
@@ -417,36 +503,63 @@ document.getElementById("drawButton").onclick = function(){
             collection[i].style.zIndex = i.toString();
             //console.log(collection[i].style.zIndex);
         }
+
         newCard.style.top = "-20px"
+
+        hideColorPicker();
+
+
+        //From Game Board Card On Click:
+        if(selectedCard == card){
+            if(selectedCard != undefined){
+                if(selectedCard.color == "multi"){
+                    showColorPicker();
+        
+                }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
+        
+                    gameboardcard = selectedCard;
+                    updateGameCard();
+                    removeCard(selectedId);
+                }
+            }
+        }
+
+        
         selectedCard = card;
         selectedId = card.id;
         console.log("ID:" + card.id);
-
-
-        childNodeNumber = document.getElementById("scroller").children.length
-
-
-        hideColorPicker();
         console.log(selectedCard);
-
-
-
         
-        //From Game Board Card On Click:
-        if(selectedCard != undefined){
-            if(selectedCard.color == "multi"){
-                showColorPicker();
-    
-            }else if(selectedCard.color == gameboardcard.color | selectedCard.type == gameboardcard.type){
-    
-                gameboardcard = selectedCard;
-                updateGameCard();
-                removeCard(selectedId);
-            }
-        }
+        
     }
 
 
     document.getElementById("scroller").appendChild(newCard);
 
+
+    let nCards = cardCollection.length;
+    let marginRight = "0px";
+
+    switch(true){
+        case(nCards <= 5):
+            marginRight = "5px";
+            break;
+        case(nCards <= 10):
+            marginRight = "-20px";
+            break;
+        case(nCards <= 15):
+            marginRight = "-30px";
+            break;
+        case(nCards <= 20):
+            marginRight = "-40px";
+            break;
+        case(nCards > 20):
+            marginRight = "-50px";
+            break;
+    }
+    const collection =  document.getElementsByClassName("cardImage");
+    
+        for(let i = 0; i < collection.length; i++){
+            collection[i].style.marginRight = marginRight;
+        }
 }
