@@ -1,3 +1,73 @@
+class Card{
+
+    //1-9
+    //skip
+    //reverse
+    //draw 2
+
+
+    //Multi-Colored:
+    //wild
+    //draw 4
+    //dump 3 -> everyone draws three cards including player, player picks a color, next player is not skipped
+
+    constructor(forceNumber=false, forceBlank = false){
+
+        if(!forceBlank){
+            if(!forceNumber){
+                let randomNumber = Math.random();
+                this.type = "";
+
+                if(randomNumber <= 0.50){
+                    this.type = "number";
+                }else if(randomNumber <= 0.62){
+                    this.type = "skip";
+                }else if(randomNumber <= 0.74){
+                    this.type = "reverse";
+                }else if(randomNumber <= 0.84){
+                    this.type = "draw2";
+                }else if(randomNumber <= 0.94){
+                    this.type = "alldraw3";
+                }else{
+                    this.type = "draw4";
+                }
+            }else{
+                this.type = "number";
+            }
+
+            if(this.type != "draw4" && this.type != "alldraw3"){
+                let colors = ["red","blue","green","yellow"];
+                this.color = colors[getRandomInt(4)];
+            }else{
+                this.color = "multi";
+            }
+
+            if(this.type == "number"){
+                let numbers = ["1","2","3","4","5","6","7","8","9"]
+                this.type = numbers[getRandomInt(9)];
+            }
+        }else{
+            this.type = "blank";
+
+        }
+
+        this.id = "0";
+
+
+
+    }
+
+    getCard(){
+        return this.color + this.type
+    }
+  }
+
+  var gameboardcard = new Card(forceNumber=true);
+
+
+
+
+
 function randomFromArray(array) {
     return array[Math.floor(Math.random() * array.length)];
   }
@@ -93,6 +163,12 @@ var numberOfPlayers = 0;
 
     function initGame(){
 
+        const allPlayersRef = firebase.database().ref(`players`);
+        //const allCoinsRef = firebase.database().ref(`coins`);
+        const gameRef = firebase.database().ref(`game`);
+
+
+
         //players[playerId].time = Date.now();
         //playerRef.set(players[playerId]);
 
@@ -117,9 +193,12 @@ var numberOfPlayers = 0;
         }
 
 
+
+        //PLAY CARD
         document.getElementById("gameboardcard").onclick = function(){
             
             if(selectedCard != undefined){
+
                 if(selectedCard.color == "multi"){
                     showColorPicker();
                     
@@ -129,6 +208,11 @@ var numberOfPlayers = 0;
                     updateGameCard();
                     removeCard(selectedId);
                     updateCCDB();
+
+                    gameRef.set({
+                        gameCard:gameboardcard
+                    })
+                    //gameRef.gameCard = gameboardcard;
                 }
             }
         
@@ -182,10 +266,27 @@ var numberOfPlayers = 0;
 
 
 
-        const allPlayersRef = firebase.database().ref(`players`);
-        //const allCoinsRef = firebase.database().ref(`coins`);
-        const gameRef = firebase.database().ref(`game`);
         
+
+
+        
+        //UPDATE DB GAMECARD
+        gameboardcard = new Card(forceNumber=true);
+        if(gameRef.players==undefined){
+            console.log("GAME REF CREATED!");
+
+            gameRef.set({
+                gameCard:gameboardcard
+            })
+        }else{
+            gameboardcard = new Card(forceNumber=true);
+            gameboardcard.type = gameRef.gameCard.type;
+            gameboardcard.color = gameRef.gameCard.color;
+        }
+        updateGameCard();
+       
+
+
         allPlayersRef.on("value", (snapshot)=>{
             //fires whenever a change occurs
 
@@ -260,6 +361,14 @@ var numberOfPlayers = 0;
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
             characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards.length;
             playerContainer.appendChild(characterElement);
+
+
+
+            //inside Child Added
+            console.log("CONFIRMATION");
+            console.log(snapshot.val());
+            
+
                 })
 
 
@@ -272,6 +381,18 @@ var numberOfPlayers = 0;
                 delete playerElements[removedKey];
             })
 
+
+
+            gameRef.on("child_added", (snapshot)=>{
+
+            })
+
+            gameRef.on("value", (snapshot)=>{
+
+                gameboardcard.type = snapshot.val().gameCard.type;
+                gameboardcard.color = snapshot.val().gameCard.color;
+                updateGameCard();
+            })
 
             playerNameInput.addEventListener("change", (e)=>{
                 const newName = e.target.value || createName();
@@ -295,7 +416,7 @@ var numberOfPlayers = 0;
         playerRef = firebase.database().ref(`players/${playerId}`);
     
 
-        gameRef = firebase.database().ref(`game`);
+        //gameRef = firebase.database().ref(`game`);
         //console.log(`gameRef/${gameStarted}`);
 
         //since variable name matches db
@@ -318,6 +439,8 @@ var numberOfPlayers = 0;
         playerRef.onDisconnect().remove();
     
        
+        
+        
 
         //Begin the game
         initGame();
@@ -388,71 +511,7 @@ class Game {
 
 
 
-  class Card{
-
-    //1-9
-    //skip
-    //reverse
-    //draw 2
-
-
-    //Multi-Colored:
-    //wild
-    //draw 4
-    //dump 3 -> everyone draws three cards including player, player picks a color, next player is not skipped
-
-    constructor(forceNumber=false, forceBlank = false){
-
-        if(!forceBlank){
-            if(!forceNumber){
-                let randomNumber = Math.random();
-                this.type = "";
-
-                if(randomNumber <= 0.50){
-                    this.type = "number";
-                }else if(randomNumber <= 0.62){
-                    this.type = "skip";
-                }else if(randomNumber <= 0.74){
-                    this.type = "reverse";
-                }else if(randomNumber <= 0.84){
-                    this.type = "draw2";
-                }else if(randomNumber <= 0.94){
-                    this.type = "alldraw3";
-                }else{
-                    this.type = "draw4";
-                }
-            }else{
-                this.type = "number";
-            }
-
-            if(this.type != "draw4" && this.type != "alldraw3"){
-                let colors = ["red","blue","green","yellow"];
-                this.color = colors[getRandomInt(4)];
-            }else{
-                this.color = "multi";
-            }
-
-            if(this.type == "number"){
-                let numbers = ["1","2","3","4","5","6","7","8","9"]
-                this.type = numbers[getRandomInt(9)];
-            }
-        }else{
-            this.type = "blank";
-
-        }
-
-        this.id = "0";
-
-
-
-    }
-
-    getCard(){
-        return this.color + this.type
-    }
-  }
-
-
+  
 
 
 
@@ -481,6 +540,9 @@ document.getElementById("addButton").onclick = function(){
 
 
 
+
+
+
 //COLOR PICKER for draw4 and draw3
 
 function showColorPicker(){
@@ -497,6 +559,10 @@ function showColorPicker(){
         x.style.display = "none";
   }
 
+
+
+  
+
  
 
   //change card on game board
@@ -508,7 +574,7 @@ function showColorPicker(){
 
 
 
-var gameboardcard = new Card(forceNumber=true);
+//var gameboardcard = new Card(forceNumber=true);
 var selectedCard = undefined;
 
 updateGameCard();
