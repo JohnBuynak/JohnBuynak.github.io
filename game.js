@@ -230,9 +230,10 @@ var numberOfPlayers = 0;
                     removeCard(selectedId);
                     updateCCDB();
 
-                    gameRef.set({
-                        gameCard:gameboardcard
+                    gameRef.update({
+                       gameCard:gameboardcard
                     })
+                    
                     //gameRef.gameCard = gameboardcard;
                 }
             }
@@ -283,14 +284,18 @@ var numberOfPlayers = 0;
 
 
 
-
+        console.log("CHECKING CHECKING -------- GAME REF");
+        console.log(gameRef.gameCard);
         //init turn
         //INITIALIZE GAME REFERENCE
         //UPDATE DB GAMECARD
+
         gameboardcard = new Card(forceNumber=true);
 
-        if(gameRef==undefined){
+        //updateGameCard();
+        if(gameRef.gameCard==undefined){
             console.log("GAME REF CREATED!");
+
 
             gameRef.set({
                 gameCard:gameboardcard,
@@ -406,9 +411,14 @@ var numberOfPlayers = 0;
             })
 
             gameRef.on("value", (snapshot)=>{
-
-                gameboardcard.type = snapshot.val().gameCard.type;
-                gameboardcard.color = snapshot.val().gameCard.color;
+                
+                try{
+                    gameboardcard.type = snapshot.val().gameCard.type;
+                    gameboardcard.color = snapshot.val().gameCard.color;
+                }catch(error){
+                    console.error(error);
+                }
+                
                 updateGameCard();
             })
 
