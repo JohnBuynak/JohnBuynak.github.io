@@ -152,6 +152,8 @@ var numberOfPlayers = 0;
     let players = {}; //local list of state
     let playerElements = {};
 
+    let playerOrderList = {}; //play order
+
     //let gameRef; //firebase game ref
 
     const gameContainer = document.querySelector(".game-container");
@@ -180,6 +182,7 @@ var numberOfPlayers = 0;
         }
     
         function updateCCDB(){
+            //updates Your cc on db
             players[playerId].cards =cardCollection;
             playerRef.set(players[playerId]);
             console.log("CARD COLLECTION UPDATED")
@@ -269,7 +272,7 @@ var numberOfPlayers = 0;
         
 
 
-        
+        //INITIALIZE GAME REFERENCE
         //UPDATE DB GAMECARD
         gameboardcard = new Card(forceNumber=true);
         if(gameRef.players==undefined){
@@ -279,9 +282,9 @@ var numberOfPlayers = 0;
                 gameCard:gameboardcard
             })
         }else{
-            gameboardcard = new Card(forceNumber=true);
-            gameboardcard.type = gameRef.gameCard.type;
-            gameboardcard.color = gameRef.gameCard.color;
+            //gameboardcard = new Card(forceNumber=true);
+            //gameboardcard.type = gameRef.gameCard.type;
+            //gameboardcard.color = gameRef.gameCard.color;
         }
         updateGameCard();
        
@@ -296,6 +299,8 @@ var numberOfPlayers = 0;
             //if null set to empty object
             players = snapshot.val() || {};
 
+            console.log("LOCAL REF PLAYERS");
+            console.log(players);
 
             Object.keys(players).forEach((key)=>{
                 const characterState = players[key];
@@ -327,20 +332,6 @@ var numberOfPlayers = 0;
             //    characterElement.classList.add("you");
             //}
 
-
-            
-            /*
-            characterElement.innerHTML = (`
-                <div class="Character_shadow grid-cell"></div>
-                <div class="Character_sprite grid-cell"></div>
-                <div class="Character_name-container">
-                <span class="Character_name"></span>
-                <span class="Character_coins">0</span>
-                </div>
-                <div class="Character_you-arrow"></div>
-            `);
-             */
-
             
             characterElement.innerHTML = (`
                 <b class="cardNumberText">2</b>
@@ -365,10 +356,13 @@ var numberOfPlayers = 0;
 
 
             //inside Child Added
-            console.log("CONFIRMATION");
-            console.log(snapshot.val());
-            
+            //console.log("CONFIRMATION");
+            //console.log(snapshot.val());
 
+
+            playerOrderList[addedPlayer.id] = addedPlayer.time;
+            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]});
+            console.log(keysSorted);
                 })
 
 
