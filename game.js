@@ -169,6 +169,10 @@ var numberOfPlayers = 0;
         //const allCoinsRef = firebase.database().ref(`coins`);
         const gameRef = firebase.database().ref(`game`);
 
+        //console.log("--------GAME REF GAME CARD----------");
+        //console.log("--------GAME REF GAME CARD----------");
+        //console.log(gameRef.gameCard);
+        //console.log(gameRef);
 
 
         //players[playerId].time = Date.now();
@@ -266,22 +270,17 @@ var numberOfPlayers = 0;
 
 
 
-
-
-
-        
-
-
         //INITIALIZE GAME REFERENCE
         //UPDATE DB GAMECARD
         gameboardcard = new Card(forceNumber=true);
-        if(gameRef.players==undefined){
+        if(gameRef==undefined){
             console.log("GAME REF CREATED!");
 
             gameRef.set({
                 gameCard:gameboardcard
             })
         }else{
+            console.log("GAME REF IS NOT UNDEFINED!");
             //gameboardcard = new Card(forceNumber=true);
             //gameboardcard.type = gameRef.gameCard.type;
             //gameboardcard.color = gameRef.gameCard.color;
