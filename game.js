@@ -78,7 +78,7 @@ function randomFromArray(array) {
         "JACKED",
         "DIRTY",
         "BASTARD",
-        "DEGENERATE",
+        "BIG",
         "LAME",
         "LUMPY",
         "FAT",
@@ -108,9 +108,9 @@ function randomFromArray(array) {
       "DOPE",
     ]);
     const animal = randomFromArray([
-        "MUSKRAT",
+        "HAM",
         "TURTLE",
-        "CHIPMUNK",
+        "TIGER",
         "TOAD",
         "HIPPO",
         "SHIT",
@@ -185,6 +185,20 @@ var numberOfPlayers = 0;
             //playerRef.set(players[playerId]);
         }
     
+        function changeTurns(){
+           // playerOrderList
+        }
+
+        function reverseTurns(){
+
+            console.log("REVERSE TURNS!!");
+
+            //playerOrderList[addedPlayer.id] = addedPlayer.time;
+            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
+            console.log(keysSorted);
+        }
+
+
         function updateCCDB(){
             //updates Your cc on db
             players[playerId].cards =cardCollection;
@@ -270,23 +284,33 @@ var numberOfPlayers = 0;
 
 
 
+        //init turn
         //INITIALIZE GAME REFERENCE
         //UPDATE DB GAMECARD
         gameboardcard = new Card(forceNumber=true);
+
         if(gameRef==undefined){
             console.log("GAME REF CREATED!");
 
             gameRef.set({
-                gameCard:gameboardcard
+                gameCard:gameboardcard,
+                playerList:playerOrderList
             })
+            playerRef.update({
+                turn:true
+            });
         }else{
             console.log("GAME REF IS NOT UNDEFINED!");
             //gameboardcard = new Card(forceNumber=true);
             //gameboardcard.type = gameRef.gameCard.type;
             //gameboardcard.color = gameRef.gameCard.color;
         }
+
         updateGameCard();
        
+
+
+
 
 
         allPlayersRef.on("value", (snapshot)=>{
@@ -358,9 +382,10 @@ var numberOfPlayers = 0;
             //console.log("CONFIRMATION");
             //console.log(snapshot.val());
 
+            console.log("KEYS SORTED:");
 
             playerOrderList[addedPlayer.id] = addedPlayer.time;
-            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]});
+            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
             console.log(keysSorted);
                 })
 

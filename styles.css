@@ -31,6 +31,18 @@ html{
 }
 
 
+@media (max-width: 1000px) {
+
+  .title{
+    font-size: 8rem;
+    text-align: center;
+    position: static;
+    color: #c21240;
+  }
+
+}
+
+
 
 /* Chrome, Safari, Opera */
 @-webkit-keyframes changeColor {
@@ -84,6 +96,17 @@ html{
   animation-direction: alternate;
 }
 
+@media (max-width: 1000px) {
+
+  .titleRed{
+    font-size: 8rem;
+    text-align: center;
+    position: static;
+    color: #c21240;
+  }
+
+}
+
 @keyframes changeColorBlue {
   0%   {color: #4625db;}
   40%   {color: #3617c0;}
@@ -98,6 +121,17 @@ html{
   animation: changeColorBlue 3s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
+}
+
+@media (max-width: 1000px) {
+
+  .titleBlue{
+    font-size: 8rem;
+    text-align: center;
+    position: static;
+    color: #c21240;
+  }
+
 }
 
 @keyframes changeColorYellow {
@@ -116,6 +150,7 @@ html{
   animation-direction: alternate;
 }
 
+
 @keyframes changeColorGreen {
   0%   {color: #26a50d;}
   40%   {color: #269410;}
@@ -133,7 +168,16 @@ html{
 }
 
 
+@media (max-width: 1000px) {
 
+  .titleGreen{
+    font-size: 8rem;
+    text-align: center;
+    position: static;
+    color: #c21240;
+  }
+
+}
 
 
 
@@ -247,7 +291,7 @@ html{
 
 
 
-.button{
+.play-button{
   display: flex;
   margin: 0 auto;
   justify-content: center;
@@ -263,7 +307,26 @@ html{
   color: #fff;
 }
 
-.button:hover{
+@media (max-width: 1000px) {
+
+  .play-button{
+    height: 30%;
+    display:flex;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background: linear-gradient(145deg, #ec5537 -10%, #f83123 20%, #f76ef7 125%);
+    color: #fff;
+  }
+
+}
+
+.play-button:hover{
   background: linear-gradient(145deg, #ec5537 -30%, #ec4646 60%, #e9afaf  95%);
   transition: all 1.2s ease;
 }
