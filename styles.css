@@ -520,6 +520,27 @@ html{
   margin-right: 0;
 }
 
+@media (max-width: 1000px) {
+
+  .img-new{
+    display: block;
+    height: 65px;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+}
+
+
+.img-new-card{
+  display: block;
+  height: 100px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+
+
 .img-orig{
   width: 100px;
   display: inline;
