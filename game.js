@@ -1,4 +1,7 @@
 
+
+
+
 class Card{
 
     //1-9
@@ -392,9 +395,11 @@ function drawCard(){
                 reverse:false,
                 drawNumber:0
             })
-            playerRef.update({
-                turn:true
-            });
+
+            //playerRef.update({
+              //  turn:true
+            //});
+
         }else{
             console.log("GAME REF IS NOT UNDEFINED!");
             //gameboardcard = new Card(forceNumber=true);
@@ -407,6 +412,11 @@ function drawCard(){
 
 
 
+/*
+const removedKey = snapshot.val().id;
+                playerContainer.removeChild(playerElements[removedKey]);
+                delete playerElements[removedKey];
+                */
 
 
         allPlayersRef.on("value", (snapshot)=>{
@@ -430,12 +440,22 @@ function drawCard(){
         })
 
 
+        
+               
+
         //PLAYER JOINED GAME
-        allPlayersRef.on("child_added", (snapshot)=>{
+        //allPlayersRef.orderByChild('time').on('child_added', (snapshot) => {});
+        allPlayersRef.on('child_added', (snapshot) => {
 
             //numberOfPlayers += 1;
             //console.log(`NUMBER OF PLAYERS:${numberOfPlayers}`)
             
+
+            //Redraw based on time joined
+            //playerOrderList[addedPlayer.id] = addedPlayer.time;
+            //var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]})
+
+
 
             //fires whenever a new node is added
             //new to me, if i join late everyone is new to me
@@ -469,16 +489,23 @@ function drawCard(){
             //Fill in some initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
             characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards.length;
-            playerContainer.appendChild(characterElement);
+            //playerContainer.appendChild(characterElement);
 
 
 
+            playerContainer.replaceChildren();
 
+            
+            //DRAW IN CORRECT ORDER ON SCREEN:
 
             //console.log("KEYS SORTED:");
-            //playerOrderList[addedPlayer.id] = addedPlayer.time;
-            //var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
-            //console.log(keysSorted);
+            playerOrderList[addedPlayer.id] = addedPlayer.time;
+            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
+            //for(const item in playerElements){playerContainer.appendChild(playerElements[item]);}
+
+            for (let i =0; i < keysSorted.length;i++) {
+                playerContainer.appendChild(playerElements[keysSorted[i]]);
+              }
 
 
                 })
@@ -494,10 +521,8 @@ function drawCard(){
             })
 
 
+            
 
-            gameRef.on("child_added", (snapshot)=>{
-
-            })
 
             gameRef.on("value", (snapshot)=>{
                 
@@ -519,44 +544,68 @@ function drawCard(){
                 });
             })
 
-
-
     }
+
+
+    getUser();
+
+
+    async function getUser(){
+
+        const userCredential = await firebase.auth().signInAnonymously();
+        console.log('Additional user info: ', userCredential.additionalUserInfo);
+
+        let newUser = userCredential.additionalUserInfo.isNewUser;
+    
     
     firebase.auth().onAuthStateChanged((user) =>{
       console.log("FIREBASE AUTH, ON AUTH STATE CHANGED")
       if(user){
-        console.log(user.uid)
-    
-        //you are logged setInterval(function () {
+
+
+        //console.log(user.uid);
+        //console.log(user);
+
+
+        //you are logged in
+
         playerId = user.uid;
         playerRef = firebase.database().ref(`players/${playerId}`);
     
 
-        //gameRef = firebase.database().ref(`game`);
-        //console.log(`gameRef/${gameStarted}`);
 
         //since variable name matches db
-        const name = createName();
-        playerNameInput.value = name;
 
-        const time =  Date.now();
-
-        playerRef.set({
-          id:playerId,
-          name,
-          cards:[1,1,1,1,1],
-          score:0,
-          turn:false,
-          time
+        if(newUser){
+            const name = createName();
+            playerNameInput.value = name;
     
-        })
+            const time =  Date.now();
     
-        //Remove Player from firebase when they disconnect
-        playerRef.onDisconnect().remove();
     
-       
+            playerRef.set({
+                id:playerId,
+                name,
+                cards:[1,1,1,1,1],
+                score:0,
+                turn:false,
+                time,
+                onlineStatus:true,
+                wins:0
+            
+                })
+        }
         
+
+
+        
+
+        //Remove Player from firebase when they disconnect
+        //playerRef.onDisconnect().remove();
+       
+        playerRef.onDisconnect().update({
+            onlineStatus:false
+        })
         
 
         //Begin the game
@@ -571,12 +620,17 @@ function drawCard(){
         }
     })
     
+    
+    
+
     firebase.auth().signInAnonymously().catch((error) =>{
       var errorCode = error.code;
       var errorMessage = error.message;
     
       console.log(errorCode,errorMessage);
     });
+
+}
     
     })();
     
@@ -584,8 +638,7 @@ function drawCard(){
 
 
 
-
-
+    
 
 
 
@@ -626,16 +679,7 @@ class Game {
     return Math.floor(Math.random() * max);
   }
 
-
-
-  
-
-
-
-
 const game = new Game();
-
-
 
 
 
@@ -653,9 +697,6 @@ document.getElementById("addButton").onclick = function(){
 
 }
 */
-
-
-
 
 
 
