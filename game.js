@@ -1,3 +1,4 @@
+
 class Card{
 
     //1-9
@@ -51,7 +52,8 @@ class Card{
 
         }
 
-        this.id = "0";
+
+        this.id = this.color + this.type + getRandomInt(1000);
 
 
 
@@ -200,7 +202,7 @@ var numberOfPlayers = 0;
 
 
         function updateCCDB(){
-            //updates Your cc on db
+            //updates Your cardcollection in db
             players[playerId].cards =cardCollection;
             playerRef.set(players[playerId]);
             console.log("CARD COLLECTION UPDATED")
@@ -240,22 +242,111 @@ var numberOfPlayers = 0;
         
         }
         
+
+
+
+
+
+        //DRAW CARD + SET CARD FUNCTION
+        
+function drawCard(){
+
+    let card = new Card();
+    cardCollection.push(card);
+
+    selectedCard = undefined;
+
+    console.log(cardCollection);
+
+    console.log(card.color, card.type);
+
+    let imageSource = "/images/" + card.getCard() + ".png"
+
+    let newCard = document.createElement("img");
+    newCard.className = "cardImage";
+    newCard.src = imageSource;
+
+
+    
+
+    newCard.style.marginRight ="-40px";
+
+    //newCard = document reference
+    //card = card class ref
+    newCard.id = card.id
+
+    //newCard.id = document.getElementById("scroller").children.length.toString();
+    //card.id = newCard.id;
+
+
+    //Click Card, Select it
+
+    newCard.onclick = function(){
+        const collection =  document.getElementsByClassName("cardImage");
+        console.clear();
+        //stack cards
+        for(let i = 0; i < collection.length; i++){
+            collection[i].style.top = "0px"
+            collection[i].style.zIndex = i.toString();
+            //console.log(collection[i].style.zIndex);
+        }
+
+        newCard.style.top = "-20px"
+
+        hideColorPicker();
+
+
+        //From Game Board Card On Click:
+        if(selectedCard == card){
+            if(selectedCard != undefined){
+                if(selectedCard.color == "multi"){
+                    showColorPicker();
+        
+                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
+        
+                    gameboardcard = selectedCard;
+                    updateGameCard();
+                    removeCard(selectedId);
+                    updateCCDB();
+                }
+            }
+        }
+
+        
+        selectedCard = card;
+        selectedId = card.id;
+        console.log("ID:" + card.id);
+        console.log(selectedCard);
+        
+        
+    }
+
+
+    document.getElementById("scroller").appendChild(newCard);
+
+
+    updateCardMargins();
+
+
+}
         
         
         //COLOR PICKER Buttons
         
         document.getElementById("pickred").onclick = function(){
             document.getElementById("gameboardcard").src = "/images/redblank.png"
-            gameboardcard = new Card(forceBlank=true);
+            gameboardcard = new Card(false, true);
             gameboardcard.color = "red";
+            //gameboardcard.type = "blank";
             hideColorPicker();
             removeCard(selectedId);
-            console.log(gameboardcard);
+            console.log("----------PICK COLOR--------")
+            console.log(gameboardcard); //game card changed by this point
             updateCCDB();
         }
         document.getElementById("pickblue").onclick = function(){
             document.getElementById("gameboardcard").src = "/images/blueblank.png"
-            gameboardcard = new Card(forceBlank=true);
+            gameboardcard = new Card(false, true);
             gameboardcard.color = "blue";
             hideColorPicker();
             removeCard(selectedId);
@@ -264,7 +355,7 @@ var numberOfPlayers = 0;
         }
         document.getElementById("pickyellow").onclick = function(){
             document.getElementById("gameboardcard").src = "/images/yellowblank.png"
-            gameboardcard = new Card(forceBlank=true);
+            gameboardcard = new Card(false, true);
             gameboardcard.color = "yellow";
             hideColorPicker();
             removeCard(selectedId);
@@ -273,7 +364,7 @@ var numberOfPlayers = 0;
         }
         document.getElementById("pickgreen").onclick = function(){
             document.getElementById("gameboardcard").src = "/images/greenblank.png"
-            gameboardcard = new Card(forceBlank=true);
+            gameboardcard = new Card(false, true);
             gameboardcard.color = "green";
             hideColorPicker();
             removeCard(selectedId);
@@ -284,13 +375,11 @@ var numberOfPlayers = 0;
 
 
 
-        console.log("CHECKING CHECKING -------- GAME REF");
-        console.log(gameRef.gameCard);
         //init turn
         //INITIALIZE GAME REFERENCE
         //UPDATE DB GAMECARD
 
-        gameboardcard = new Card(forceNumber=true);
+        gameboardcard = new Card(true);
 
         //updateGameCard();
         if(gameRef.gameCard==undefined){
@@ -299,7 +388,9 @@ var numberOfPlayers = 0;
 
             gameRef.set({
                 gameCard:gameboardcard,
-                playerList:playerOrderList
+                playerList:playerOrderList,
+                reverse:false,
+                drawNumber:0
             })
             playerRef.update({
                 turn:true
@@ -334,16 +425,17 @@ var numberOfPlayers = 0;
                 const characterState = players[key];
                 let el = playerElements[key];
                 el.querySelector(".Character_name").innerText = characterState.name;
-                el.querySelector(".cardNumberText").innerText = characterState.cards.length;
+                el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
             })
         })
 
 
+        //PLAYER JOINED GAME
         allPlayersRef.on("child_added", (snapshot)=>{
 
-            numberOfPlayers += 1;
-            console.log(`NUMBER OF PLAYERS:${numberOfPlayers}`)
-            //gameRef.set
+            //numberOfPlayers += 1;
+            //console.log(`NUMBER OF PLAYERS:${numberOfPlayers}`)
+            
 
             //fires whenever a new node is added
             //new to me, if i join late everyone is new to me
@@ -353,12 +445,12 @@ var numberOfPlayers = 0;
 
             //to be cleaned:
             const characterElement = document.createElement("div");
-            //characterElement.classList.add("Character", "grid-cell");
             characterElement.classList.add("row");
 
-            //if (addedPlayer.id === playerId) {
-            //    characterElement.classList.add("you");
-            //}
+            /*
+            if (addedPlayer.id === playerId) {
+                characterElement.classList.add("you");
+            }*/
 
             
             characterElement.innerHTML = (`
@@ -368,13 +460,11 @@ var numberOfPlayers = 0;
                 </div>
                 <div style="width:50%; display: table;"> <b class="Character_name" 
                 style="text-align: center;">John</b></div>
-        `);
+            `);
        
-        
-
-
-
+            
             playerElements[addedPlayer.id] = characterElement;
+
 
             //Fill in some initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
@@ -383,15 +473,14 @@ var numberOfPlayers = 0;
 
 
 
-            //inside Child Added
-            //console.log("CONFIRMATION");
-            //console.log(snapshot.val());
 
-            console.log("KEYS SORTED:");
 
-            playerOrderList[addedPlayer.id] = addedPlayer.time;
-            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
-            console.log(keysSorted);
+            //console.log("KEYS SORTED:");
+            //playerOrderList[addedPlayer.id] = addedPlayer.time;
+            //var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
+            //console.log(keysSorted);
+
+
                 })
 
 
@@ -619,7 +708,7 @@ var cardCollection = [];
 var selectedCardNumber = 0;
 
 
-var selectedId = "";
+var selectedId = undefined;
 
 
 
@@ -642,135 +731,66 @@ function removeCard(id){
 
 }
 
-
-
+const mediaQuery = window.matchMedia('(max-width: 800px)');
+//update Margins
+//update Card Images
 function updateCardMargins(){
+
     let nCards = cardCollection.length;
     let marginRight = "0px";
 
-    switch(true){
-        case(nCards <= 5):
-            marginRight = "5px";
-            break;
-        case(nCards <= 10):
-            marginRight = "-20px";
-            break;
-        case(nCards <= 15):
-            marginRight = "-30px";
-            break;
-        case(nCards <= 20):
-            marginRight = "-40px";
-            break;
-        case(nCards > 20):
-            marginRight = "-50px";
-            break;
+    
+    if (mediaQuery.matches)
+    {
+        //smaller screen
+        switch(true){
+            case(nCards <= 5):
+                marginRight = "5px";
+                break;
+            case(nCards <= 10):
+                marginRight = "-20px";
+                break;
+            case(nCards <= 15):
+                marginRight = "-30px";
+                break;
+            case(nCards <= 20):
+                marginRight = "-40px";
+                break;
+            case(nCards > 20):
+                marginRight = "-50px";
+                break;
+        }
     }
+    else
+    {
+        //bigger screen
+        switch(true){
+            case(nCards <= 10):
+                marginRight = "5px";
+                break;
+            case(nCards <= 15):
+                marginRight = "-20px";
+                break;
+            case(nCards <= 20):
+                marginRight = "-30px";
+                break;
+            case(nCards <= 25):
+                marginRight = "-40px";
+                break;
+            case(nCards > 30):
+                marginRight = "-50px";
+                break;
+        }
+    }
+    
     const collection =  document.getElementsByClassName("cardImage");
     
         for(let i = 0; i < collection.length; i++){
             collection[i].style.marginRight = marginRight;
-        }
-}
-
-
-
-function drawCard(){
-    let card = new Card();
-    cardCollection.push(card);
-
-    
-
-    console.log(cardCollection);
-
-    console.log(card.color, card.type);
-
-    let imageSource = "/images/" + card.getCard() + ".png"
-
-    let newCard = document.createElement("img");
-    newCard.className = "cardImage";
-    newCard.src = imageSource;
-
-
-    
-
-    newCard.style.marginRight ="-40px";
-
-    newCard.id = document.getElementById("scroller").children.length.toString();
-    card.id = newCard.id;
-
-
-    //Click Card, Select it
-
-    newCard.onclick = function(){
-        const collection =  document.getElementsByClassName("cardImage");
-        console.clear();
-        for(let i = 0; i < collection.length; i++){
             collection[i].style.top = "0px"
             collection[i].style.zIndex = i.toString();
-            //console.log(collection[i].style.zIndex);
         }
-
-        newCard.style.top = "-20px"
-
-        hideColorPicker();
-
-
-        //From Game Board Card On Click:
-        if(selectedCard == card){
-            if(selectedCard != undefined){
-                if(selectedCard.color == "multi"){
-                    showColorPicker();
-        
-                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
-        
-                    gameboardcard = selectedCard;
-                    updateGameCard();
-                    removeCard(selectedId);
-                }
-            }
-        }
-
-        
-        selectedCard = card;
-        selectedId = card.id;
-        console.log("ID:" + card.id);
-        console.log(selectedCard);
-        
-        
-    }
-
-
-    document.getElementById("scroller").appendChild(newCard);
-
-
-    updateCardMargins();
-
-    /*
-    let nCards = cardCollection.length;
-    let marginRight = "0px";
-
-    switch(true){
-        case(nCards <= 5):
-            marginRight = "5px";
-            break;
-        case(nCards <= 10):
-            marginRight = "-20px";
-            break;
-        case(nCards <= 15):
-            marginRight = "-30px";
-            break;
-        case(nCards <= 20):
-            marginRight = "-40px";
-            break;
-        case(nCards > 20):
-            marginRight = "-50px";
-            break;
-    }
-    const collection =  document.getElementsByClassName("cardImage");
-    
-        for(let i = 0; i < collection.length; i++){
-            collection[i].style.marginRight = marginRight;
-        }
-        */
-
 }
+
+
+

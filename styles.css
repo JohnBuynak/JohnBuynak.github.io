@@ -274,6 +274,20 @@ html{
   height: 80px;
 }
 
+@media (max-width: 1000px) {
+
+  .cardImage{
+    display: inline;
+    position: relative;
+    z-index: 1;
+    left: 0px;
+  
+    margin-top: 20px;
+    width: 60px;
+  }
+
+}
+
 
 
 
