@@ -484,21 +484,32 @@ const removedKey = snapshot.val().id;
 
             console.log("LOCAL REF PLAYERS");
             console.log(players);
+            
+            //let keysToRemove = [];
 
             Object.keys(players).forEach((key)=>{
+                
+
+                if(players[key].onlineStatus == true){
+
                 const characterState = players[key];
                 let el = playerElements[key];
                 console.log(el);
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
-
-                if(players[key].onlineStatus == false){
-                    //Remove Player when they go offline:
-                    const removedKey = key;
-                    playerContainer.removeChild(playerElements[removedKey]);
-                    //delete playerElements[removedKey];
+                }else{
+                //Remove Player when they go offline:
+                let removedKey = key;
+                playerContainer.removeChild(playerElements[removedKey]);
+                //keysToRemove.push(removedKey);
+                delete playerElements[removedKey];
                 }
+                
+                    
+                
             })
+
+            //keysToRemove.forEach(key =>{                    delete playerElements[key];                })
 
            // playerOrderList[addedPlayer.id] = addedPlayer.time;
             
