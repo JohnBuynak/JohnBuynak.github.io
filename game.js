@@ -420,27 +420,46 @@ var numberOfPlayers = 0;
 
 
         //updateGameCard();
-        if(gameRef.gameCard==undefined){
-            console.log("GAME REF CREATED!");
+
+        // if(gameRef.gameCard==undefined){
+        //     console.log("*** GAME REF CREATED! ***");
 
 
-            gameRef.set({
-                gameCard:gameboardcard,
-                playerList:playerOrderList,
-                reverse:false,
-                drawNumber:0
-            })
+        //     gameRef.set({
+        //         gameCard:gameboardcard,
+        //         playerList:playerOrderList,
+        //         reverse:false,
+        //         drawNumber:0
+        //     })
 
-            //playerRef.update({
-              //  turn:true
-            //});
+        //     //playerRef.update({
+        //       //  turn:true
+        //     //});
 
-        }else{
-            console.log("GAME REF IS NOT UNDEFINED!");
-            //gameboardcard = new Card(forceNumber=true);
-            //gameboardcard.type = gameRef.gameCard.type;
-            //gameboardcard.color = gameRef.gameCard.color;
-        }
+        // }else{
+        //     console.log("GAME REF IS NOT UNDEFINED!");
+        //     //gameboardcard = new Card(forceNumber=true);
+        //     //gameboardcard.type = gameRef.gameCard.type;
+        //     //gameboardcard.color = gameRef.gameCard.color;
+        // }
+
+
+        gameRef.get().then((snapshot) =>
+        {
+            if (snapshot.exists()) {
+
+              } else {
+
+                gameRef.set({
+                    gameCard:gameboardcard,
+                    playerList:playerOrderList,
+                    reverse:false,
+                    drawNumber:0
+                })
+              }
+        })
+
+
 
         updateGameCard();
        
@@ -473,15 +492,15 @@ const removedKey = snapshot.val().id;
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
 
-                // if(players[key].onlineStatus == false){
-                //     //Remove Player when they go offline:
-                //     const removedKey = key;
-                //     playerContainer.removeChild(playerElements[removedKey]);
-                //     delete playerElements[removedKey];
-                // }
+                if(players[key].onlineStatus == false){
+                    //Remove Player when they go offline:
+                    const removedKey = key;
+                    playerContainer.removeChild(playerElements[removedKey]);
+                    //delete playerElements[removedKey];
+                }
             })
 
-
+           // playerOrderList[addedPlayer.id] = addedPlayer.time;
             
         })
 
@@ -685,7 +704,6 @@ const removedKey = snapshot.val().id;
         playerRef.onDisconnect().update({
             onlineStatus:false
 
-            
         })
         
         
