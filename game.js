@@ -183,6 +183,26 @@ var numberOfPlayers = 0;
         //players[playerId].time = Date.now();
         //playerRef.set(players[playerId]);
 
+        
+            // const time =  Date.now();
+            // const name = playerRef.name ?? createName();
+            // const cards = playerRef.cards ?? [];
+            // const turn = playerRef.turn ?? false;
+            // const onlineStatus = playerRef.onlineStatus ?? true;
+            // const wins = playerRef.wins ?? 0;
+
+            // playerRef.update({
+            //     id:playerId,
+            //     name,
+            //     cards,
+            //     turn,
+            //     time,
+            //     onlineStatus:true,
+            //     wins
+            //     })
+
+
+
         //INITIAL DRAW
         //
 
@@ -612,6 +632,9 @@ const removedKey = snapshot.val().id;
         playerRef = firebase.database().ref(`players/${playerId}`);
     
 
+        console.log(playerRef);
+        console.log(playerRef.name);
+        console.log("PLAYER REF-------------!");
 
         //since variable name matches db
 
@@ -634,22 +657,22 @@ const removedKey = snapshot.val().id;
                 })
         }else{
             
-            const time =  Date.now();
-            const name = playerRef.name ?? createName();
-            const cards = playerRef.cards ?? [];
-            const turn = playerRef.turn ?? false;
-            const onlineStatus = playerRef.onlineStatus ?? true;
-            const wins = playerRef.wins ?? 0;
+             const time =  Date.now();
+            // const name = playerRef.name ?? createName();
+            // const cards = playerRef.cards ?? [];
+            // const turn = playerRef.turn ?? false;
+            // const onlineStatus = playerRef.onlineStatus ?? true;
+            // const wins = playerRef.wins ?? 0;
 
-            playerRef.update({
-                id:playerId,
-                name,
-                cards,
-                turn,
-                time,
-                onlineStatus:true,
-                wins
-                })
+             playerRef.update({
+            //     id:playerId,
+            //     name,
+            //     cards,
+                 turn:false,
+                 time,
+                 onlineStatus:true,
+            //     wins
+                 })
         }
         
 
@@ -664,6 +687,7 @@ const removedKey = snapshot.val().id;
 
             
         })
+        
         
 
         //Begin the game
