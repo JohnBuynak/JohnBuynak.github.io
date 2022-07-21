@@ -184,12 +184,23 @@ var numberOfPlayers = 0;
         //playerRef.set(players[playerId]);
 
         //INITIAL DRAW
+        //
+
+        
         for(let i = 0; i < 5; i++){
             drawCard();
+            console.log("DRAW!");
             //players[playerId].cards =cardCollection;
             //playerRef.set(players[playerId]);
+            if(i == 4){
+                updateCCDB();
+            }
+            
         }
+        //updateCCDB();
     
+
+
         function changeTurns(){
            // playerOrderList
         }
@@ -206,9 +217,12 @@ var numberOfPlayers = 0;
 
         function updateCCDB(){
             //updates Your cardcollection in db
-            players[playerId].cards =cardCollection;
-            playerRef.set(players[playerId]);
-            console.log("CARD COLLECTION UPDATED")
+            //players[playerId].cards =cardCollection;
+            //playerRef.set(players[playerId]);
+            playerRef.update({
+                cards:cardCollection
+            });
+            console.log("CARD COLLECTION UPDATED");
         }
 
         document.getElementById("drawButton").onclick = function(){
@@ -252,7 +266,7 @@ var numberOfPlayers = 0;
 
         //DRAW CARD + SET CARD FUNCTION
         
-function drawCard(){
+        function drawCard(){
 
     let card = new Card();
     cardCollection.push(card);
@@ -331,7 +345,7 @@ function drawCard(){
     updateCardMargins();
 
 
-}
+            }
         
         
         //COLOR PICKER Buttons
@@ -383,6 +397,7 @@ function drawCard(){
         //UPDATE DB GAMECARD
 
         gameboardcard = new Card(true);
+
 
         //updateGameCard();
         if(gameRef.gameCard==undefined){
@@ -488,7 +503,7 @@ const removedKey = snapshot.val().id;
 
             //Fill in some initial state
             characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
-            characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards.length;
+            characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards?.length ?? 0;
             //playerContainer.appendChild(characterElement);
 
 
@@ -536,9 +551,17 @@ const removedKey = snapshot.val().id;
                 updateGameCard();
             })
 
+            document.getElementById("refreshName").onclick =function(){
+                let newName = createName();
+                //playerNameInput.value = newName;
+                playerRef.update({
+                    name:newName
+                });
+            };
+
             playerNameInput.addEventListener("change", (e)=>{
                 const newName = e.target.value || createName();
-                playerNameInput.value = newName;
+                //playerNameInput.value = newName;
                 playerRef.update({
                     name:newName
                 });
@@ -548,6 +571,7 @@ const removedKey = snapshot.val().id;
 
 
     getUser();
+
 
 
     async function getUser(){
@@ -586,13 +610,21 @@ const removedKey = snapshot.val().id;
             playerRef.set({
                 id:playerId,
                 name,
-                cards:[1,1,1,1,1],
+                cards:[],
                 score:0,
                 turn:false,
                 time,
                 onlineStatus:true,
                 wins:0
             
+                })
+        }else{
+
+            const time =  Date.now();
+    
+            playerRef.update({
+                time,
+                onlineStatus:true
                 })
         }
         
