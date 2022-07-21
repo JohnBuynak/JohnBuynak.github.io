@@ -451,7 +451,17 @@ const removedKey = snapshot.val().id;
                 let el = playerElements[key];
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
+
+                if(players[key].onlineStatus == false){
+                    //Remove Player when they go offline:
+                    const removedKey = key;
+                    playerContainer.removeChild(playerElements[removedKey]);
+                    delete playerElements[removedKey];
+                }
             })
+
+
+            
         })
 
 
@@ -637,6 +647,8 @@ const removedKey = snapshot.val().id;
        
         playerRef.onDisconnect().update({
             onlineStatus:false
+
+            
         })
         
 
