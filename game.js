@@ -449,15 +449,16 @@ const removedKey = snapshot.val().id;
             Object.keys(players).forEach((key)=>{
                 const characterState = players[key];
                 let el = playerElements[key];
+                console.log(el);
                 el.querySelector(".Character_name").innerText = characterState.name;
                 el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
 
-                if(players[key].onlineStatus == false){
-                    //Remove Player when they go offline:
-                    const removedKey = key;
-                    playerContainer.removeChild(playerElements[removedKey]);
-                    delete playerElements[removedKey];
-                }
+                // if(players[key].onlineStatus == false){
+                //     //Remove Player when they go offline:
+                //     const removedKey = key;
+                //     playerContainer.removeChild(playerElements[removedKey]);
+                //     delete playerElements[removedKey];
+                // }
             })
 
 
@@ -486,6 +487,7 @@ const removedKey = snapshot.val().id;
             //new to me, if i join late everyone is new to me
             const addedPlayer = snapshot.val();
             
+            console.log("******* ADDED PLAYER *******");
             console.log(addedPlayer);
 
             //to be cleaned:
@@ -509,6 +511,9 @@ const removedKey = snapshot.val().id;
        
             
             playerElements[addedPlayer.id] = characterElement;
+
+            console.log("PLAYER ELEMENTS");
+            console.log(playerElements);
 
 
             //Fill in some initial state
@@ -621,7 +626,6 @@ const removedKey = snapshot.val().id;
                 id:playerId,
                 name,
                 cards:[],
-                score:0,
                 turn:false,
                 time,
                 onlineStatus:true,
@@ -629,12 +633,22 @@ const removedKey = snapshot.val().id;
             
                 })
         }else{
-
+            
             const time =  Date.now();
-    
+            const name = playerRef.name ?? createName();
+            const cards = playerRef.cards ?? [];
+            const turn = playerRef.turn ?? false;
+            const onlineStatus = playerRef.onlineStatus ?? true;
+            const wins = playerRef.wins ?? 0;
+
             playerRef.update({
+                id:playerId,
+                name,
+                cards,
+                turn,
                 time,
-                onlineStatus:true
+                onlineStatus:true,
+                wins
                 })
         }
         
