@@ -235,7 +235,7 @@ function updateCardMargins(){
 }
 
 //TODO
-function getPlayOrder(){}
+function getPlayOrder(){} 
 function passDrawTwoFour(){}
 
 
@@ -322,7 +322,7 @@ ex: (function(){})();
                             gameboardCard = selectedCard;
                             updateGameCard();
                             removeCard(selectedCard.id);
-                            updateCCDB(); //cards:cardCollection
+                            updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
                             gameRef.update({
                                 gameCard:gameboardCard
                              })
@@ -402,7 +402,7 @@ ex: (function(){})();
                     gameboardCard = selectedCard;
                     updateGameCard();
                     removeCard(selectedCard.id);
-                    updateCCDB(); //cards:cardCollection
+                    updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
                     gameRef.update({
                         gameCard:gameboardCard
                      })
@@ -416,7 +416,43 @@ ex: (function(){})();
         document.getElementById("drawButton").onclick = function(){
 
             onDraw();
-            updateCCDB(); //cards:cardCollection
+            updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+        }
+
+
+        //COLOR PICKER Buttons
+
+        document.getElementById("pickred").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/redblank.png"
+            gameboardCard = new Card(false, true);
+            gameboardCard.color = "red";
+            hideColorPicker();
+            removeCard(selectedCard.id);
+            updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+        }
+        document.getElementById("pickblue").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/blueblank.png"
+            gameboardCard = new Card(false, true);
+            gameboardCard.color = "blue";
+            hideColorPicker();
+            removeCard(selectedCard.id);
+            updateCCDB();
+        }
+        document.getElementById("pickyellow").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/yellowblank.png"
+            gameboardCard = new Card(false, true);
+            gameboardCard.color = "yellow";
+            hideColorPicker();
+            removeCard(selectedCard.id);
+            updateCCDB();
+        }
+        document.getElementById("pickgreen").onclick = function(){
+            document.getElementById("gameboardcard").src = "/images/greenblank.png"
+            gameboardCard = new Card(false, true);
+            gameboardCard.color = "green";
+            hideColorPicker();
+            removeCard(selectedCard.id);
+            updateCCDB();
         }
 
 
