@@ -459,6 +459,13 @@ ex: (function(){})();
                     gameCard:gameboardCard
                 });
             updateGameCard();
+
+            Object.keys(players).forEach(key => {
+                
+                firebase.database().ref(`game/players/${key}`).remove();
+                
+            });
+            location.reload();
         }
 
         //PLAY CARD
