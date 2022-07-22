@@ -516,9 +516,9 @@ ex: (function(){})();
                 gameboardCard.color = "red";
 
                 //update gamecard and gameref before other updates
-                // gameRef.update({
-                //     gameCard:gameboardCard
-                // });
+                gameRef.update({
+                    gameCard:gameboardCard
+                });
 
                 hideColorPicker();
                 removeCard(selectedCard.id);
@@ -533,6 +533,10 @@ ex: (function(){})();
                 document.getElementById("gameboardcard").src = "/images/blueblank.png"
                 gameboardCard = new Card(false, true);
                 gameboardCard.color = "blue";
+
+                gameRef.update({
+                    gameCard:gameboardCard
+                });
                 hideColorPicker();
                 removeCard(selectedCard.id);
                 //updateCCDB();
@@ -546,6 +550,10 @@ ex: (function(){})();
                 document.getElementById("gameboardcard").src = "/images/yellowblank.png"
                 gameboardCard = new Card(false, true);
                 gameboardCard.color = "yellow";
+
+                gameRef.update({
+                    gameCard:gameboardCard
+                });
                 hideColorPicker();
                 removeCard(selectedCard.id);
                 getNextPlayer(); //updates DB, next player turn = true
@@ -559,6 +567,10 @@ ex: (function(){})();
                 document.getElementById("gameboardcard").src = "/images/greenblank.png"
                 gameboardCard = new Card(false, true);
                 gameboardCard.color = "green";
+
+                gameRef.update({
+                    gameCard:gameboardCard
+                });
                 hideColorPicker();
                 removeCard(selectedCard.id);
                 getNextPlayer(); //updates DB, next player turn = true
