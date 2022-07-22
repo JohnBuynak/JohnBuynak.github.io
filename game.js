@@ -1,10 +1,11 @@
 
 
-var selectedCard = undefined;
+var selectedCard;
 var cardCollection = [];
-var gameboardCard = undefined;
 var reverse = false;
 var drawCount = 0;
+var myTurn = false;
+var gameStarted = false;
 
 class Card{
 
@@ -137,6 +138,9 @@ function getRandomInt(max) {
 }
 
 
+var gameboardCard = new Card(false,true);
+gameboardCard.color = "red";
+
 /*
 DOM - Document Object Model
 */
@@ -154,7 +158,9 @@ function hideColorPicker(){
 }
 
 function updateGameCard(){
-    document.getElementById("gameboardcard").src = "/images/" + gameboardCard.getCard() + ".png"
+    document.getElementById("gameboardcard").src = "/images/" + gameboardCard.getCard() + ".png";
+
+    document.getElementById("infoTag").innerHTML=`${gameStarted} ${gameboardCard.type} ${gameboardCard.color}`;
 }
 
 function removeCard(id){
@@ -234,8 +240,14 @@ function updateCardMargins(){
         }
 }
 
+
+
 //TODO
-function getPlayOrder(){} 
+//players local object ids and times
+//reverse local ref to reverse db
+//sort players id by time, (reverse?) find your name, get next
+
+
 function passDrawTwoFour(){}
 
 
@@ -283,6 +295,20 @@ ex: (function(){})();
                 cards:cardCollection,
                 drawCount:0
             });
+            document.getElementById("infoTag").innerHTML=`${gameStarted} ${gameboardCard.type} ${gameboardCard.color}`;
+        }
+
+        function completeTurn(){
+            //updates Your cardcollection in db
+            //resets draw Count
+            //turn = false
+            myTurn = false;
+
+            playerGameRef.update({
+                cards:cardCollection,
+                drawCount:0,
+                turn:false
+            });
         }
 
 
@@ -299,39 +325,52 @@ ex: (function(){})();
 
             //click on the DOM image
             newCard.onclick = function(){
-                const collection =  document.getElementsByClassName("cardImage"); //all card images
 
-                //stack cards
-                for(let i = 0; i < collection.length; i++){
-                    collection[i].style.top = "0px"
-                    collection[i].style.zIndex = i.toString();
-                }
-  
-                //selected card moves up
-                newCard.style.top = "-20px"
-                hideColorPicker();
+                if(myTurn){
 
-                //is clicked card already selected?
-                if(selectedCard == card){
-                    if(selectedCard != undefined){
-                        if(selectedCard.color == "multi"){
-                            showColorPicker();
-  
-                        }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
-                            //Play Card
-                            gameboardCard = selectedCard;
-                            updateGameCard();
-                            removeCard(selectedCard.id);
-                            updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
-                            gameRef.update({
-                                gameCard:gameboardCard
-                             })
+                    const collection =  document.getElementsByClassName("cardImage"); //all card images
+
+                    //stack cards
+                    for(let i = 0; i < collection.length; i++){
+                        collection[i].style.top = "0px"
+                        collection[i].style.zIndex = i.toString();
+                    }
+    
+                    //selected card moves up
+                    newCard.style.top = "-20px"
+                    hideColorPicker();
+
+                    //is clicked card already selected?
+                    if(selectedCard == card){
+                        if(selectedCard != undefined){
+                            if(selectedCard.color == "multi"){
+                                showColorPicker();
+    
+                            }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
+                                //Play Card
+
+                                if(myTurn){
+                                    gameboardCard = selectedCard;
+                                    //update gamecard and gameref before other updates
+                                    gameRef.update({
+                                        gameCard:gameboardCard
+                                    });
+
+                                    updateGameCard(); //Updates Src for Image
+                                    removeCard(selectedCard.id);
+                                    getNextPlayer(); //updates DB, next player turn = true
+                                    //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                                    completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+                                    
+                                }
+                                
+                            }
                         }
                     }
-                }
 
-                selectedCard = card;
-                console.log(selectedCard);
+                    selectedCard = card;
+                    console.log(selectedCard);
+                }
             }
 
             document.getElementById("scroller").appendChild(newCard);
@@ -346,9 +385,11 @@ ex: (function(){})();
 
                     if(snapshot.val()){
                         console.log("GAME STARTED STATUS:True");
+                        gameStarted = true;
                         return true;
                     }else{
                         console.log("GAME STARTED STATUS:False");
+                        gameStarted =false;
                         return false;
                     }
                     
@@ -367,17 +408,38 @@ ex: (function(){})();
             //Game = Started
             //Deal Cards to All Players -> set trigger
             //Set GameboardCard
+            
 
-            if(!isGameStarted()){
+            if(!gameStarted){
+
+                gameboardCard = new Card(forceNumber=true);
+                gameStarted = true;
                 gameRef.update({
-                    gameStarted:true
+                    gameStarted:true,
+                    gameCard:gameboardCard
                 });
     
+                //Random Key turn = true
+                let rKey = Object.keys(players)[getRandomInt(Object.keys(players).length)];
                 
+
                 Object.keys(players).forEach(key => {
-                    firebase.database().ref(`game/players/${key}`).update({
-                        drawCount:5
-                    });
+
+                    if(key == rKey){
+                        //your turn
+                        
+
+                        firebase.database().ref(`game/players/${key}`).update({
+                            drawCount:5,
+                            turn:true
+                        });
+                    }else{
+                        firebase.database().ref(`game/players/${key}`).update({
+                            drawCount:5
+                        });
+                    }
+                    
+
                   });
 
                 // players.forEach((id) => {
@@ -386,6 +448,17 @@ ex: (function(){})();
                 //     })
                 // })
             }
+        }
+
+        document.getElementById("newGame").onclick = function(){
+            gameboardCard = new Card(false,true);
+            gameboardCard.color = "red";
+                gameStarted = true;
+                gameRef.update({
+                    gameStarted:false,
+                    gameCard:gameboardCard
+                });
+            updateGameCard();
         }
 
         //PLAY CARD
@@ -399,13 +472,20 @@ ex: (function(){})();
                 }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
 
                     //Play Card
-                    gameboardCard = selectedCard;
-                    updateGameCard();
-                    removeCard(selectedCard.id);
-                    updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
-                    gameRef.update({
-                        gameCard:gameboardCard
-                     })
+                    if(myTurn){
+                        gameboardCard = selectedCard;
+                        //update gamecard and gameref before other updates
+                        gameRef.update({
+                            gameCard:gameboardCard
+                        });
+
+                        updateGameCard(); //Updates Src for Image
+                        removeCard(selectedCard.id);
+                        getNextPlayer(); //updates DB, next player turn = true
+                        //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                        completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+                        
+                    }
 
                 }
             }
@@ -423,36 +503,62 @@ ex: (function(){})();
         //COLOR PICKER Buttons
 
         document.getElementById("pickred").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/redblank.png"
-            gameboardCard = new Card(false, true);
-            gameboardCard.color = "red";
-            hideColorPicker();
-            removeCard(selectedCard.id);
-            updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+            if(myTurn){
+                document.getElementById("gameboardcard").src = "/images/redblank.png"
+                gameboardCard = new Card(false, true);
+                gameboardCard.color = "red";
+
+                //update gamecard and gameref before other updates
+                // gameRef.update({
+                //     gameCard:gameboardCard
+                // });
+
+                hideColorPicker();
+                removeCard(selectedCard.id);
+                getNextPlayer(); //updates DB, next player turn = true
+                //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+            }
+            
         }
         document.getElementById("pickblue").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/blueblank.png"
-            gameboardCard = new Card(false, true);
-            gameboardCard.color = "blue";
-            hideColorPicker();
-            removeCard(selectedCard.id);
-            updateCCDB();
+            if(myTurn){
+                document.getElementById("gameboardcard").src = "/images/blueblank.png"
+                gameboardCard = new Card(false, true);
+                gameboardCard.color = "blue";
+                hideColorPicker();
+                removeCard(selectedCard.id);
+                //updateCCDB();
+                getNextPlayer(); //updates DB, next player turn = true
+                completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+            }
+            
         }
         document.getElementById("pickyellow").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/yellowblank.png"
-            gameboardCard = new Card(false, true);
-            gameboardCard.color = "yellow";
-            hideColorPicker();
-            removeCard(selectedCard.id);
-            updateCCDB();
+            if(myTurn){
+                document.getElementById("gameboardcard").src = "/images/yellowblank.png"
+                gameboardCard = new Card(false, true);
+                gameboardCard.color = "yellow";
+                hideColorPicker();
+                removeCard(selectedCard.id);
+                getNextPlayer(); //updates DB, next player turn = true
+                //updateCCDB();
+                completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+            }
+            
         }
         document.getElementById("pickgreen").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/greenblank.png"
-            gameboardCard = new Card(false, true);
-            gameboardCard.color = "green";
-            hideColorPicker();
-            removeCard(selectedCard.id);
-            updateCCDB();
+            if(myTurn){
+                document.getElementById("gameboardcard").src = "/images/greenblank.png"
+                gameboardCard = new Card(false, true);
+                gameboardCard.color = "green";
+                hideColorPicker();
+                removeCard(selectedCard.id);
+                getNextPlayer(); //updates DB, next player turn = true
+                //updateCCDB();
+                completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+            }
+            
         }
 
 
@@ -499,22 +605,22 @@ ex: (function(){})();
 
 
         //TODO inspect
-        firebase.database().ref(`gameCard`).get().then((snapshot) => {
-            if (snapshot.exists()) {
-                console.log(snapshot.val());
-            } else {
-                console.log("GAME Card DOESNT EXIST");
-                //set new gameboard card
-                gameboardCard = new Card(forceNumber=true);
+        // firebase.database().ref(`gameCard`).get().then((snapshot) => {
+        //     if (snapshot.exists()) {
+        //         console.log(snapshot.val());
+        //     } else {
+        //         console.log("GAME Card DOESNT EXIST");
+        //         //set new gameboard card
+        //         gameboardCard = new Card(forceNumber=true);
 
-                gameRef.update({
-                    reverse:false,
-                    drawNumber:0,
-                    gameStarted:false,
-                    gameCard:gameboardCard
-                });
-            }
-        });
+        //         gameRef.update({
+        //             reverse:false,
+        //             drawNumber:0,
+        //             gameStarted:false,
+        //             gameCard:gameboardCard
+        //         });
+        //     }
+        // });
 
 
         
@@ -547,13 +653,13 @@ ex: (function(){})();
         //gameboard card logic, move to start game function
         gameRef.get().then((snapshot) => {
             if (snapshot.exists()) {
-                console.log("GAME EXISTS!")
-                console.log(snapshot.val().gameStarted)
-                if(!snapshot.val().gameStarted){
-                    //game hasnt started
-                    gameboardCard = new Card(forceNumber = true);
-                    updateCCDB(); //cards:cardCollection
-                }
+                // console.log("GAME EXISTS!")
+                // console.log(snapshot.val().gameStarted)
+                // if(!snapshot.val().gameStarted){
+                //     //game hasnt started
+                //     gameboardCard = new Card(forceNumber = true);
+                //     updateCCDB(); //cards:cardCollection
+                // }
             } else {
 
                 gameRef.update({
@@ -566,6 +672,11 @@ ex: (function(){})();
 
 
         playerGameRef.on("value", (snapshot) => {
+
+            //your turn?
+            let yourTurn = snapshot.val().turn;
+            //HANDLE TURN
+            myTurn=yourTurn;
 
             let drawNum = snapshot.val().drawCount;
             console.log("DRAW NUMBER:");
@@ -647,15 +758,46 @@ ex: (function(){})();
 
         gameRef.on("value", (snapshot)=>{
 
-            try{gameboardcard.type = snapshot.val().gameCard.type;
-                gameboardcard.color = snapshot.val().gameCard.color;
+            
+            try{gameboardCard.type = snapshot.val().gameCard.type;
+                gameboardCard.color = snapshot.val().gameCard.color;
             }catch(error){
-                gameboardCard = new Card(forceNumber=true);
+                //gameboardCard = new Card(forceNumber=true);
+                console.error(error);
             }
             
-            //Updates Src for Image
-            updateGameCard();
+            console.log("GAME REF VALUE CHANGED");
+            gameStarted = snapshot.val().gameStarted;
+            
+            updateGameCard(); //Updates Src for Image
         })
+
+
+
+
+
+
+        function getNextPlayer(myId = playerId){
+            if(reverse){
+                var keysSorted = Object.keys(players).sort(function(a,b){return players[a]-players[b]}).reverse();
+            }else{
+                var keysSorted = Object.keys(players).sort(function(a,b){return players[a]-players[b]});
+            }
+            
+            let index = keysSorted.findIndex(id => id == myId);
+            let nextPlayerId = keysSorted[index + 1] ?? keysSorted[0];
+            
+            //Update Database
+            console.log(nextPlayerId );
+
+            
+            firebase.database().ref(`game/players/${nextPlayerId}`).update({
+                        turn:true
+            });
+            
+        } 
+
+
 
     }
 
