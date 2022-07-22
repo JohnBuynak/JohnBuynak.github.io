@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character</title>
+
+    <style>
+
+        :root{
+
+            --Skin-color: #F18888;
+            --shirt-color: #DC5353;
+            --Eyes-color: #120565;
+            --Hair-color: #E7AD18;
+            --nose-color: #E25858;
+
+        }
+
+        #Skin {
+           fill: var(--Skin-color);
+        }
+        #shirt {
+           fill: var(--shirt-color);
+        }
+        #Eyes {
+           fill: var(--Eyes-color);
+           transition: all 1s ease;
+        }
+        #Hair {
+           fill: var(--Hair-color);
+        }
+        #nose {
+           fill: var(--nose-color);
+        }
+
+        #tongue, #mouth, #tline, #nose{
+            transition: all 1s ease;
+        }
+
+        svg:hover #Eyes{
+            transform: skewX(-5deg);
+        }
+
+        svg:hover #mouth{
+            transform: skewX(-3deg);
+        }
+
+        svg:hover #tline{
+            transform: skewX(-3deg);
+        }
+
+        svg:hover #tongue{
+            transform: skewX(-3deg);
+            opacity: 90;
+            color:#120565
+        }
+
+        svg:hover #nose{
+            transform: rotateY(-15deg);
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+
+
+
+<svg id = "character" width="92" height="154" viewBox="0 0 92 154" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 1" clip-path="url(#clip0_2_2)">
+<path id="shirt" d="M73.5938 77.4189C78.0194 77.4962 81.541 81.1524 81.4525 85.5777L80.4524 135.546C80.3642 139.956 76.7239 143.462 72.3143 143.385L22.3433 142.512C17.9178 142.435 14.3961 138.778 14.4847 134.353L15.4847 84.3845C15.573 79.9751 19.2132 76.4688 23.6229 76.5458L73.5938 77.4189Z"/>
+<g id="Skin">
+<path id="neck" d="M38.4649 79.7018C37.3013 79.7503 36.3425 78.7982 36.3828 77.6343L37.1278 56.1367C37.164 55.0919 37.9988 54.2512 39.0433 54.2077L60.5351 53.3119C61.6987 53.2633 62.6575 54.2154 62.6172 55.3794L61.8722 76.877C61.836 77.9218 61.0012 78.7624 59.9567 78.8059L38.4649 79.7018Z" />
+<ellipse id="face" cx="48" cy="44" rx="38" ry="33"/>
+<path id="chest" d="M50.756 98.1523C49.9753 99.4793 48.0508 99.4635 47.292 98.124L36.1936 78.5324C35.4348 77.1928 36.4107 75.5341 37.9502 75.5467L60.4661 75.731C62.0057 75.7436 62.9542 77.4181 62.1735 78.7451L50.756 98.1523Z"/>
+</g>
+<path id="mouth" d="M62.9153 60.1148C61.7111 62.72 58.2361 63.2467 56.3139 61.1152L52.3313 56.699C50.1974 54.3326 51.552 50.5428 54.7025 50.0653L61.1802 49.0836C64.3307 48.6061 66.7474 51.8243 65.4105 54.7167L62.9153 60.1148Z" fill="black"/>
+<path id="tongue" d="M62.4396 61.7115C61.5453 63.4929 59.1946 63.923 57.7275 62.5736L56.1288 61.1031C54.3066 59.427 55.1845 56.3896 57.6199 55.9441L60.1931 55.4733C62.6285 55.0278 64.5249 57.5576 63.4141 59.7703L62.4396 61.7115Z" fill="#FF0000"/>
+<ellipse id="Ellipse 5" cx="38.5" cy="40" rx="6.5" ry="5" fill="white"/>
+<ellipse id="Ellipse 6" cx="61.5" cy="30" rx="6.5" ry="5" fill="white"/>
+<g id="Eyes">
+
+<ellipse id="Ellipse 3" cx="41" cy="40.5" rx="3" ry="2.5"/>
+<ellipse id="Ellipse 7" cx="64" cy="30.5" rx="3" ry="2.5"/>
+</g>
+
+<g id="Hair">
+<path id="hair4" d="M10.0009 31.5686C15.2072 30.3294 19.822 35.1537 18.3529 40.2999L17.9537 41.6981C16.4695 46.8974 9.9018 48.5225 6.16425 44.6152L5.14888 43.5537C1.41132 39.6464 3.32629 33.1574 8.58639 31.9053L10.0009 31.5686Z" />
+<path id="hair3" d="M20.2734 8.78171C22.795 4.64237 28.6587 4.25656 31.7009 8.02985L35.4148 12.6362C38.9736 17.0502 36.0826 23.6425 30.425 24.0147L23.6327 24.4616C17.975 24.8339 14.2453 18.6772 17.195 13.835L20.2734 8.78171Z" />
+<path id="hair3_2" d="M8.32516 18.7166C10.8469 14.5781 16.7096 14.1924 19.7518 17.9648L22.5652 21.4535C26.1247 25.8674 23.2339 32.4604 17.5759 32.8327L12.4303 33.1712C6.77225 33.5435 3.04254 27.386 5.99306 22.5439L8.32516 18.7166Z" />
+<path id="hair2" d="M36.3248 4.34338C39.2431 0.541504 45.0329 0.730695 47.6967 4.71498L49.8246 7.8976C52.9923 12.6354 49.473 18.9707 43.7768 18.7845L39.3178 18.6388C33.6216 18.4527 30.5235 11.9012 33.9937 7.38029L36.3248 4.34338Z" />
+<path id="hair1" d="M47.737 5.16582C50.9622 1.60274 56.7364 2.27501 59.0567 6.48373L59.539 7.35854C62.2872 12.3432 58.2533 18.3495 52.5995 17.6912L51.4468 17.557C45.7929 16.8988 43.2468 10.1264 47.0666 5.90643L47.737 5.16582Z"/>
+</g>
+<line id="tline" x1="58.6499" y1="55.2785" x2="59.7641" y2="58.064" stroke="black" stroke-linecap="round"/>
+<path id="nose" d="M51.6783 39.0431C52.5901 36.0239 56.4743 35.1983 58.5353 37.5856L61.1068 40.5642C63.0948 42.867 61.8864 46.4582 58.9106 47.0907L55.2015 47.8791C52.2257 48.5116 49.6611 45.7224 50.5407 42.8101L51.6783 39.0431Z"/>
+</g>
+<defs>
+<clipPath id="clip0_2_2">
+<rect width="92" height="154" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    
+<script>
+
+    const svg = document.getElementById("character");
+
+    svg.onclick = (e) => {
+
+        const hairColors = ["#eb5834", "#3b2d1d","#E7AD18","#0d0700"];
+        const randomHair = () => hairColors[Math.floor(Math.random() * hairColors.length)];
+
+        const shirtColors = ["#4a6f9e", "#DC5353","#4a9e60","#994978","#611511"];
+        const randomShirt = () => shirtColors[Math.floor(Math.random() * shirtColors.length)];
+
+        const skinColors = ["#edd4b7","#deb07a","#9e7f4a","#b88e54", "#e3bc86", "#756248", "#291b07", "#EF7D7D"];
+        const randomSkin = () => skinColors[Math.floor(Math.random() * skinColors.length)];
+
+        const eyeColors = ["#120565","#074213","#2b1a06"];
+        const randomEyes = () => eyeColors[Math.floor(Math.random() * eyeColors.length)];
+
+        document.documentElement.style.cssText = `
+        --shirt-color:${randomShirt()};
+        --Hair-color:${randomHair()};
+        --Skin-color:${randomSkin()};
+        --Eyes-color:${randomEyes()};
+
+        `
+
+    }
+
+
+
+</script>
+
+
+</body>
+</html>
