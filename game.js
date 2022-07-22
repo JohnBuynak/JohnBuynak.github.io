@@ -1,24 +1,18 @@
 
 
-
+var selectedCard = undefined;
+var cardCollection = [];
+var gameboardCard = undefined;
 
 class Card{
 
-    //1-9
-    //skip
-    //reverse
-    //draw 2
-
-
-    //Multi-Colored:
-    //wild
-    //draw 4
-    //dump 3 -> everyone draws three cards including player, player picks a color, next player is not skipped
 
     constructor(forceNumber=false, forceBlank = false){
 
         if(!forceBlank){
+
             if(!forceNumber){
+
                 let randomNumber = Math.random();
                 this.type = "";
 
@@ -65,804 +59,101 @@ class Card{
     getCard(){
         return this.color + this.type
     }
-  }
-
-  var gameboardcard = new Card(forceNumber=true);
-
-
-
-
+}
 
 function randomFromArray(array) {
     return array[Math.floor(Math.random() * array.length)];
-  }
+}
 
-
-  function createName() {
+function createName() {
     const prefix = randomFromArray([
-        "JACKED",
-        "DIRTY",
-        "BASTARD",
-        "BIG",
-        "LAME",
-        "LUMPY",
-        "FAT",
-        "UGLY",
-        "LARDASS",
-        "DUMB",
-        "CHINESE",
-        "TURD",
-        "BITCHIN'",
-        "SAGGY",
-      "COOL",
-      "SUPER",
-      "HIP",
-      "SMUG",
-      "COOL",
-      "SILKY",
-      "GOOD",
-      "SAFE",
-      "DEAR",
-      "DAMP",
-      "WARM",
-      "RICH",
-      "LONG",
-      "DARK",
-      "SOFT",
-      "BUFF",
-      "DOPE",
+    "JACKED",
+    "DIRTY",
+    "BASTARD",
+    "BIG",
+    "LAME",
+    "LUMPY",
+    "FAT",
+    "UGLY",
+    "LARDASS",
+    "DUMB",
+    "CHINESE",
+    "TURD",
+    "BITCHIN'",
+    "SAGGY",
+    "COOL",
+    "SUPER",
+    "HIP",
+    "SMUG",
+    "COOL",
+    "SILKY",
+    "GOOD",
+    "SAFE",
+    "DEAR",
+    "DAMP",
+    "WARM",
+    "RICH",
+    "LONG",
+    "DARK",
+    "SOFT",
+    "BUFF",
+    "DOPE",
     ]);
     const animal = randomFromArray([
-        "HAM",
-        "TURTLE",
-        "TIGER",
-        "TOAD",
-        "HIPPO",
-        "SHIT",
-        "ORC",
-        "BOOB",
-        "WHALE",
-        "PIG",
-        "FART",
-      "BEAR",
-      "DOG",
-      "CAT",
-      "FOX",
-      "LAMB",
-      "LION",
-      "BOAR",
-      "GOAT",
-      "VOLE",
-      "SEAL",
-      "PUMA",
-      "MULE",
-      "BULL",
-      "BIRD",
-      "BUG"
+    "HAM",
+    "TURTLE",
+    "TIGER",
+    "TOAD",
+    "HIPPO",
+    "SHIT",
+    "ORC",
+    "BOOB",
+    "WHALE",
+    "PIG",
+    "FART",
+    "BEAR",
+    "DOG",
+    "CAT",
+    "FOX",
+    "LAMB",
+    "LION",
+    "BOAR",
+    "GOAT",
+    "VOLE",
+    "SEAL",
+    "PUMA",
+    "MULE",
+    "BULL",
+    "BIRD",
+    "BUG"
     ]);
     return `${prefix} ${animal}`;
-  }
-
-
-
-
-var numberOfPlayers = 0;
-
-
-
-  (function(){
-
-    let playerId; //string of who you are logged in as 
-    let playerRef; //firebase ref
-    let players = {}; //local list of state
-    let playerElements = {};
-
-    let playerOrderList = {}; //play order
-
-    //let gameRef; //firebase game ref
-
-    const gameContainer = document.querySelector(".game-container");
-    const playerContainer = document.querySelector("#chairs");
-    const playerNameInput = document.querySelector("#player-name");
-    //const playerColorButton
-    
-    
-
-    function initGame(){
-
-        const allPlayersRef = firebase.database().ref(`players`);
-        //const allCoinsRef = firebase.database().ref(`coins`);
-        const gameRef = firebase.database().ref(`game`);
-
-        //console.log("--------GAME REF GAME CARD----------");
-        //console.log("--------GAME REF GAME CARD----------");
-        //console.log(gameRef.gameCard);
-        //console.log(gameRef);
-
-
-        //players[playerId].time = Date.now();
-        //playerRef.set(players[playerId]);
-
-        
-            // const time =  Date.now();
-            // const name = playerRef.name ?? createName();
-            // const cards = playerRef.cards ?? [];
-            // const turn = playerRef.turn ?? false;
-            // const onlineStatus = playerRef.onlineStatus ?? true;
-            // const wins = playerRef.wins ?? 0;
-
-            // playerRef.update({
-            //     id:playerId,
-            //     name,
-            //     cards,
-            //     turn,
-            //     time,
-            //     onlineStatus:true,
-            //     wins
-            //     })
-
-
-
-        //INITIAL DRAW
-        //
-
-        
-        for(let i = 0; i < 5; i++){
-            drawCard();
-            console.log("DRAW!");
-            //players[playerId].cards =cardCollection;
-            //playerRef.set(players[playerId]);
-            if(i == 4){
-                updateCCDB();
-            }
-            
-        }
-        //updateCCDB();
-    
-
-
-        function changeTurns(){
-           // playerOrderList
-        }
-
-        function reverseTurns(){
-
-            console.log("REVERSE TURNS!!");
-
-            //playerOrderList[addedPlayer.id] = addedPlayer.time;
-            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
-            console.log(keysSorted);
-        }
-
-
-        function updateCCDB(){
-            //updates Your cardcollection in db
-            //players[playerId].cards =cardCollection;
-            //playerRef.set(players[playerId]);
-            playerRef.update({
-                cards:cardCollection
-            });
-            console.log("CARD COLLECTION UPDATED");
-        }
-
-        document.getElementById("drawButton").onclick = function(){
-
-            drawCard();
-            //CLEAN
-            updateCCDB();
-        }
-
-
-
-        //PLAY CARD
-        document.getElementById("gameboardcard").onclick = function(){
-            
-            if(selectedCard != undefined){
-
-                if(selectedCard.color == "multi"){
-                    showColorPicker();
-                    
-                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
-        
-                    gameboardcard = selectedCard;
-                    updateGameCard();
-                    removeCard(selectedId);
-                    updateCCDB();
-
-                    gameRef.update({
-                       gameCard:gameboardcard
-                    })
-                    
-                    //gameRef.gameCard = gameboardcard;
-                }
-            }
-        
-        }
-        
-
-
-
-
-
-        //DRAW CARD + SET CARD FUNCTION
-        
-        function drawCard(){
-
-    let card = new Card();
-    cardCollection.push(card);
-
-    selectedCard = undefined;
-
-    console.log(cardCollection);
-
-    console.log(card.color, card.type);
-
-    let imageSource = "/images/" + card.getCard() + ".png"
-
-    let newCard = document.createElement("img");
-    newCard.className = "cardImage";
-    newCard.src = imageSource;
-
-
-    
-
-    newCard.style.marginRight ="-40px";
-
-    //newCard = document reference
-    //card = card class ref
-    newCard.id = card.id
-
-    //newCard.id = document.getElementById("scroller").children.length.toString();
-    //card.id = newCard.id;
-
-
-    //Click Card, Select it
-
-    newCard.onclick = function(){
-        const collection =  document.getElementsByClassName("cardImage");
-        console.clear();
-        //stack cards
-        for(let i = 0; i < collection.length; i++){
-            collection[i].style.top = "0px"
-            collection[i].style.zIndex = i.toString();
-            //console.log(collection[i].style.zIndex);
-        }
-
-        newCard.style.top = "-20px"
-
-        hideColorPicker();
-
-
-        //From Game Board Card On Click:
-        if(selectedCard == card){
-            if(selectedCard != undefined){
-                if(selectedCard.color == "multi"){
-                    showColorPicker();
-        
-                }else if(selectedCard.color == gameboardcard.color || selectedCard.type == gameboardcard.type){
-        
-                    gameboardcard = selectedCard;
-                    updateGameCard();
-                    removeCard(selectedId);
-                    updateCCDB();
-                }
-            }
-        }
-
-        
-        selectedCard = card;
-        selectedId = card.id;
-        console.log("ID:" + card.id);
-        console.log(selectedCard);
-        
-        
-    }
-
-
-    document.getElementById("scroller").appendChild(newCard);
-
-
-    updateCardMargins();
-
-
-            }
-        
-        
-        //COLOR PICKER Buttons
-        
-        document.getElementById("pickred").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/redblank.png"
-            gameboardcard = new Card(false, true);
-            gameboardcard.color = "red";
-            //gameboardcard.type = "blank";
-            hideColorPicker();
-            removeCard(selectedId);
-            console.log("----------PICK COLOR--------")
-            console.log(gameboardcard); //game card changed by this point
-            updateCCDB();
-        }
-        document.getElementById("pickblue").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/blueblank.png"
-            gameboardcard = new Card(false, true);
-            gameboardcard.color = "blue";
-            hideColorPicker();
-            removeCard(selectedId);
-            console.log(gameboardcard);
-            updateCCDB();
-        }
-        document.getElementById("pickyellow").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/yellowblank.png"
-            gameboardcard = new Card(false, true);
-            gameboardcard.color = "yellow";
-            hideColorPicker();
-            removeCard(selectedId);
-            console.log(gameboardcard);
-            updateCCDB();
-        }
-        document.getElementById("pickgreen").onclick = function(){
-            document.getElementById("gameboardcard").src = "/images/greenblank.png"
-            gameboardcard = new Card(false, true);
-            gameboardcard.color = "green";
-            hideColorPicker();
-            removeCard(selectedId);
-            console.log(gameboardcard);
-            updateCCDB();
-        }
-
-
-
-
-        //init turn
-        //INITIALIZE GAME REFERENCE
-        //UPDATE DB GAMECARD
-
-        gameboardcard = new Card(true);
-
-
-        //updateGameCard();
-
-        // if(gameRef.gameCard==undefined){
-        //     console.log("*** GAME REF CREATED! ***");
-
-
-        //     gameRef.set({
-        //         gameCard:gameboardcard,
-        //         playerList:playerOrderList,
-        //         reverse:false,
-        //         drawNumber:0
-        //     })
-
-        //     //playerRef.update({
-        //       //  turn:true
-        //     //});
-
-        // }else{
-        //     console.log("GAME REF IS NOT UNDEFINED!");
-        //     //gameboardcard = new Card(forceNumber=true);
-        //     //gameboardcard.type = gameRef.gameCard.type;
-        //     //gameboardcard.color = gameRef.gameCard.color;
-        // }
-
-
-        gameRef.get().then((snapshot) =>
-        {
-            if (snapshot.exists()) {
-
-              } else {
-
-                gameRef.set({
-                    gameCard:gameboardcard,
-                    playerList:playerOrderList,
-                    reverse:false,
-                    drawNumber:0
-                })
-              }
-        })
-
-
-
-        updateGameCard();
-       
-
-
-
-/*
-const removedKey = snapshot.val().id;
-                playerContainer.removeChild(playerElements[removedKey]);
-                delete playerElements[removedKey];
-                */
-
-
-        allPlayersRef.on("value", (snapshot)=>{
-            //fires whenever a change occurs
-
-
-            updateGameCard();
-
-            //if null set to empty object
-            players = snapshot.val() || {};
-
-            console.log("LOCAL REF PLAYERS");
-            console.log(players);
-            
-            //let keysToRemove = [];
-
-            Object.keys(players).forEach((key)=>{
-                
-
-                if(players[key].onlineStatus == true){
-
-                const characterState = players[key];
-                let el = playerElements[key];
-                console.log(el);
-                el.querySelector(".Character_name").innerText = characterState.name;
-                el.querySelector(".cardNumberText").innerText = characterState.cards?.length ?? 0;
-                }else{
-                //Remove Player when they go offline:
-                let removedKey = key;
-                playerContainer.removeChild(playerElements[removedKey]);
-                //keysToRemove.push(removedKey);
-                delete playerElements[removedKey];
-                }
-                
-                    
-                
-            })
-
-            //keysToRemove.forEach(key =>{                    delete playerElements[key];                })
-
-           // playerOrderList[addedPlayer.id] = addedPlayer.time;
-            
-        })
-
-
-        
-               
-
-        //PLAYER JOINED GAME
-        //allPlayersRef.orderByChild('time').on('child_added', (snapshot) => {});
-        allPlayersRef.on('child_added', (snapshot) => {
-
-            //numberOfPlayers += 1;
-            //console.log(`NUMBER OF PLAYERS:${numberOfPlayers}`)
-            
-
-            //Redraw based on time joined
-            //playerOrderList[addedPlayer.id] = addedPlayer.time;
-            //var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]})
-
-
-
-            //fires whenever a new node is added
-            //new to me, if i join late everyone is new to me
-            const addedPlayer = snapshot.val();
-            
-            console.log("******* ADDED PLAYER *******");
-            console.log(addedPlayer);
-
-            //to be cleaned:
-            const characterElement = document.createElement("div");
-            characterElement.classList.add("row");
-
-            /*
-            if (addedPlayer.id === playerId) {
-                characterElement.classList.add("you");
-            }*/
-
-            
-            characterElement.innerHTML = (`
-                <b class="cardNumberText">2</b>
-                <div style="width:35%">
-                <img src="images/pawn.png" alt="" class="img-new">
-                </div>
-                <div style="width:50%; display: table;"> <b class="Character_name" 
-                style="text-align: center;">John</b></div>
-            `);
-       
-            
-            playerElements[addedPlayer.id] = characterElement;
-
-            console.log("PLAYER ELEMENTS");
-            console.log(playerElements);
-
-
-            //Fill in some initial state
-            characterElement.querySelector(".Character_name").innerText = addedPlayer.name;
-            characterElement.querySelector(".cardNumberText").innerText = addedPlayer.cards?.length ?? 0;
-            //playerContainer.appendChild(characterElement);
-
-
-
-            playerContainer.replaceChildren();
-
-            
-            //DRAW IN CORRECT ORDER ON SCREEN:
-
-            //console.log("KEYS SORTED:");
-            playerOrderList[addedPlayer.id] = addedPlayer.time;
-            var keysSorted = Object.keys(playerOrderList).sort(function(a,b){return playerOrderList[a]-playerOrderList[b]}).reverse();
-            //for(const item in playerElements){playerContainer.appendChild(playerElements[item]);}
-
-            for (let i =0; i < keysSorted.length;i++) {
-                playerContainer.appendChild(playerElements[keysSorted[i]]);
-              }
-
-
-                })
-
-
-
-
-            //Remove DOM element
-            allPlayersRef.on("child_removed", (snapshot)=>{
-                const removedKey = snapshot.val().id;
-                playerContainer.removeChild(playerElements[removedKey]);
-                delete playerElements[removedKey];
-            })
-
-
-            
-
-
-            gameRef.on("value", (snapshot)=>{
-                
-                try{
-                    gameboardcard.type = snapshot.val().gameCard.type;
-                    gameboardcard.color = snapshot.val().gameCard.color;
-                }catch(error){
-                    console.error(error);
-                }
-                
-                updateGameCard();
-            })
-
-            document.getElementById("refreshName").onclick =function(){
-                let newName = createName();
-                //playerNameInput.value = newName;
-                playerRef.update({
-                    name:newName
-                });
-            };
-
-            playerNameInput.addEventListener("change", (e)=>{
-                const newName = e.target.value || createName();
-                //playerNameInput.value = newName;
-                playerRef.update({
-                    name:newName
-                });
-            })
-
-    }
-
-
-    getUser();
-
-
-
-    async function getUser(){
-
-        const userCredential = await firebase.auth().signInAnonymously();
-        console.log('Additional user info: ', userCredential.additionalUserInfo);
-
-        let newUser = userCredential.additionalUserInfo.isNewUser;
-    
-    
-    firebase.auth().onAuthStateChanged((user) =>{
-      console.log("FIREBASE AUTH, ON AUTH STATE CHANGED")
-      if(user){
-
-
-        //console.log(user.uid);
-        //console.log(user);
-
-
-        //you are logged in
-
-        playerId = user.uid;
-        playerRef = firebase.database().ref(`players/${playerId}`);
-    
-
-        console.log(playerRef);
-        console.log(playerRef.name);
-        console.log("PLAYER REF-------------!");
-
-        //since variable name matches db
-
-        if(newUser){
-            const name = createName();
-            playerNameInput.value = name;
-    
-            const time =  Date.now();
-    
-    
-            playerRef.set({
-                id:playerId,
-                name,
-                cards:[],
-                turn:false,
-                time,
-                onlineStatus:true,
-                wins:0
-            
-                })
-        }else{
-            
-             const time =  Date.now();
-            // const name = playerRef.name ?? createName();
-            // const cards = playerRef.cards ?? [];
-            // const turn = playerRef.turn ?? false;
-            // const onlineStatus = playerRef.onlineStatus ?? true;
-            // const wins = playerRef.wins ?? 0;
-
-             playerRef.update({
-            //     id:playerId,
-            //     name,
-            //     cards,
-                 turn:false,
-                 time,
-                 onlineStatus:true,
-            //     wins
-                 })
-        }
-        
-
-
-        
-
-        //Remove Player from firebase when they disconnect
-        //playerRef.onDisconnect().remove();
-       
-        playerRef.onDisconnect().update({
-            onlineStatus:false
-
-        })
-        
-        
-
-        //Begin the game
-        initGame();
-        
-        
-    
-    
-        }else{
-          console.log("FIREBASE AUTH, FAILED TO AUTHORIZE")
-          //logged out
-        }
-    })
-    
-    
-    
-
-    firebase.auth().signInAnonymously().catch((error) =>{
-      var errorCode = error.code;
-      var errorMessage = error.message;
-    
-      console.log(errorCode,errorMessage);
-    });
-
 }
-    
-    })();
-    
 
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Game {
-    constructor() {
-
-        this.gameStarted = false;
-        this.players = [];
-        this.turnNumber = 0;
-    }
-
-    addPlayer(player){
-        this.players.push(player);
-    }
-
-  }
-
-
-  class Player {
-
-    constructor(uid,name){
-        this.uid = uid;
-        this.name = name;
-    }
-  }
-
-  function getRandomInt(max) {
+function getRandomInt(max) {
     return Math.floor(Math.random() * max);
-  }
-
-const game = new Game();
-
-
+}
 
 
 /*
-document.getElementById("addButton").onclick = function(){
-    let player = new Player(Math.random(),"John");
-    game.addPlayer(player);
-    //console.log(game.players);
-    console.clear();
-    for(let i = 0; i < game.players.length; i++){
-
-        console.log(game.players[i].uid);
-    }
-
-}
+DOM - Document Object Model
 */
 
-
-
-
-//COLOR PICKER for draw4 and draw3
+const mediaQuery = window.matchMedia('(max-width: 800px)');
 
 function showColorPicker(){
     var x = document.getElementById("colorPicker");
-
-
-        x.style.display = "block";
-
-  }
-
-  function hideColorPicker(){
-    var x = document.getElementById("colorPicker");
-
-        x.style.display = "none";
-  }
-
-
-
-  
-
- 
-
-  //change card on game board
-
-  function updateGameCard(){
-    document.getElementById("gameboardcard").src = "/images/" + gameboardcard.getCard() + ".png"
+    x.style.display = "block";
 }
 
+function hideColorPicker(){
+    var x = document.getElementById("colorPicker");
+    x.style.display = "none";
+}
 
-
-
-//var gameboardcard = new Card(forceNumber=true);
-var selectedCard = undefined;
-
-updateGameCard();
-hideColorPicker();
-
-
-
-
-
-
-
-
-var cardCollection = [];
-var selectedCardNumber = 0;
-
-
-var selectedId = undefined;
-
-
+function updateGameCard(){
+    document.getElementById("gameboardcard").src = "/images/" + gameboardCard.getCard() + ".png"
+}
 
 function removeCard(id){
     
@@ -872,7 +163,7 @@ function removeCard(id){
 
 
     function f2(item,index){
-        if(item.id == selectedId){
+        if(item.id == id){
             cardCollection.splice(index,1);
             //delete cardCollection[index]
         }
@@ -883,9 +174,6 @@ function removeCard(id){
 
 }
 
-const mediaQuery = window.matchMedia('(max-width: 800px)');
-//update Margins
-//update Card Images
 function updateCardMargins(){
 
     let nCards = cardCollection.length;
@@ -945,4 +233,493 @@ function updateCardMargins(){
 }
 
 
+
+
+/*
+This is a self-executing anonymous function. 
+The first set of parentheses contain the expressions to be executed, 
+and the second set of parentheses executes those expressions.
+
+It is a useful construct when trying to hide variables from the parent namespace. 
+All the code within the function is contained in the private scope of the function, 
+meaning it can't be accessed at all from outside the function, making it truly private.
+
+ex: (function(){})();
+*/
+
+(function(){
+
+    let playerId; //This will be Your unique id
+    let playerRef; //firebase reference to players node
+    let playerGameRef; //firebase ref to you within game, initializing creates the Game node
+    const gameRef = firebase.database().ref(`game`);
+    const gamePlayersRef = firebase.database().ref(`game/players`); //all players
+
+    
+    let players = []; //local list of players
+    let playerElements = {}; //DOM elements for each player
+    let playerOrderList = {}; //play order
+
+    
+    //DOM references
+    const gameContainer = document.querySelector(".game-container");
+    const playerContainer = document.querySelector("#chairs");
+    const playerNameInput = document.querySelector("#player-name");
+
+
+    function initGame(){
+        const allPlayersRef = firebase.database().ref(`players`);
+        //const gameRef = firebase.database().ref(`game`);
+        //const gamePlayersRef = firebase.database().ref(`game/players`)
+
+        function updateCCDB(){
+            //updates Your cardcollection in db
+            //resets draw Count
+            playerGameRef.update({
+                cards:cardCollection,
+                drawCount:0
+            });
+        }
+
+
+        function onDraw(){
+            let card = new Card(); // create new
+            selectedCard = undefined; // reset selected card to undef
+            cardCollection.push(card); //add to local collection
+
+            let imageSource = "/images/" + card.getCard() + ".png" //image location
+            let newCard = document.createElement("img");
+            newCard.className = "cardImage";
+            newCard.src = imageSource; 
+            newCard.id = card.id
+
+            //click on the DOM image
+            newCard.onclick = function(){
+                const collection =  document.getElementsByClassName("cardImage"); //all card images
+
+                //stack cards
+                for(let i = 0; i < collection.length; i++){
+                    collection[i].style.top = "0px"
+                    collection[i].style.zIndex = i.toString();
+                }
+  
+                //selected card moves up
+                newCard.style.top = "-20px"
+                hideColorPicker();
+
+                //is clicked card already selected?
+                if(selectedCard == card){
+                    if(selectedCard != undefined){
+                        if(selectedCard.color == "multi"){
+                            showColorPicker();
+  
+                        }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
+                            //Play Card
+                            gameboardCard = selectedCard;
+                            updateGameCard();
+                            removeCard(selectedCard.id);
+                            updateCCDB(); //cards:cardCollection
+                            gameRef.update({
+                                gameCard:gameboardCard
+                             })
+                        }
+                    }
+                }
+
+                selectedCard = card;
+                console.log(selectedCard);
+            }
+
+            document.getElementById("scroller").appendChild(newCard);
+            updateCardMargins();
+
+        }
+
+        function isGameStarted(){
+            firebase.database().ref(`game/gameStarted`).get().then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+
+                    if(snapshot.val()){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                    
+                } else {
+                    console.log("GAME STARTED REF DOESNT EXIST");
+                    return false;
+                }
+            });
+        }
+        
+
+        //DOM within Init
+
+        document.getElementById("startGame").onclick = function(){
+
+            //Game = Started
+            //Deal Cards to All Players -> set trigger
+            //Set GameboardCard
+
+            if(isGameStarted()){
+                gameRef.update({
+                    gameStarted:true
+                });
+    
+                
+    
+                players.forEach((id) => {
+                    firebase.database().ref(`game/players/${id}`).update({
+                        drawCount:5
+                    })
+                })
+            }
+        }
+
+
+        document.getElementById("drawButton").onclick = function(){
+
+            onDraw();
+            updateCCDB(); //cards:cardCollection
+        }
+
+
+
+
+
+        //PROBLEM
+        //both exist but say otherwise
+
+        // firebase.database().ref(`game/${playerId}/cards`).get().then((snapshot) => {
+        //     if (snapshot.exists()) {
+
+        //         console.log(snapshot.val());
+        //     } else {
+
+        //         for(let i = 0; i < 5; i++){
+        //             onDraw();
+        //             if(i == 4){
+        //                 updateCCDB(); //cards:cardCollection
+        //             }
+        //         }
+
+        //         //playerGameRef.update({name:createName()});
+        //     }
+        // });
+
+
+        // firebase.database().ref(`game/gameStarted`).get().then((snapshot) => {
+        //     if (snapshot.exists()) {
+        //         console.log(snapshot.val());
+        //     } else {
+        //         console.log("GAME STARTED DOESNT EXIST");
+        //         //set new gameboard card
+        //         gameboardCard = new Card(forceNumber=true);
+
+        //         gameRef.update({
+        //             reverse:false,
+        //             drawNumber:0,
+        //             gameStarted:false
+        //         });
+        //     }
+        // });
+
+
+
+        //TODO inspect
+        firebase.database().ref(`gameCard`).get().then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+            } else {
+                console.log("GAME Card DOESNT EXIST");
+                //set new gameboard card
+                gameboardCard = new Card(forceNumber=true);
+
+                gameRef.update({
+                    reverse:false,
+                    drawNumber:0,
+                    gameStarted:false,
+                    gameCard:gameboardCard
+                });
+            }
+        });
+
+
+        
+
+
+
+        //Listener for all changes to this node- Players
+        allPlayersRef.on("value", (snapshot) => { 
+            console.log("ALL PLAYERS REF-- VALUE");
+            console.log(snapshot.val());
+        });
+
+        //allPlayersRef.on('child_added', (snapshot) => {});
+
+
+
+        //Initialize Game Node, if it does not exist
+        //Game -> Players -> ID:turn,cards,time joined,
+
+        //UPDATE CHANGE TODO
+        //gamestarted logic, remove
+        //gameboard card logic, move to start game function
+        gameRef.get().then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log("GAME EXISTS!")
+                console.log(snapshot.val().gameStarted)
+                if(!snapshot.val().gameStarted){
+                    //game hasnt started
+                    gameboardCard = new Card(forceNumber = true);
+                    updateCCDB(); //cards:cardCollection
+                }
+            } else {
+
+                gameRef.update({
+                    reverse:false,
+                    drawNumber:0,
+                    gameStarted:false
+                });
+            }
+        });
+
+
+        playerGameRef.on("value", (snapshot) => {
+
+            let drawNum = snapshot.val().drawCount;
+            console.log("DRAW NUMBER:");
+            console.log(drawNum);
+
+
+            //remove recurrency
+            if(drawNum > 0){ 
+                for(let i = 0; i < drawNum; i++){
+                    onDraw();
+                    if(i == drawNum - 1){
+                        updateCCDB(); //cards:cardCollection  drawCount:0
+                    }
+                }
+    
+                
+            }
+            
+
+        })
+
+
+        gamePlayersRef.on("value", (snapshot) => { 
+            console.log("GAME PLAYERS REF-- VALUE");
+            console.log(snapshot.val());
+        });
+
+
+
+
+        gamePlayersRef.on("child_added", (snapshot) => {
+            console.log("GAME PLAYERS REF-- CHILD ADDED");
+            console.log(snapshot.val());
+
+            let addedPlayer = snapshot.val();
+            //Keep a local list of Players
+            players.push(addedPlayer.id);
+
+            console.log("PLAYERS (LOCAL)");
+            console.log(players);
+
+            //player joined game
+            //game is in progress? -> skip for now
+            //playerorderlist -> pull times from db, order (reversed?) 
+        });
+
+        gamePlayersRef.on("child_removed", (snapshot) => {
+            console.log("GAME PLAYERS REF-- CHILD Removed!");
+            console.log(snapshot.val());
+
+            let removedPlayer = snapshot.val();
+
+            //Remove Player from Players:
+            let toBeRemoved = (id) => id == removedPlayer.id;
+            players.splice(players.findIndex(toBeRemoved),1);
+
+        });
+
+
+
+
+        gameRef.on("value", (snapshot)=>{
+
+            try{gameboardcard.type = snapshot.val().gameCard.type;
+                gameboardcard.color = snapshot.val().gameCard.color;
+            }catch(error){
+                gameboardCard = new Card(forceNumber=true);
+            }
+            
+            //Updates Src for Image
+            updateGameCard();
+        })
+
+    }
+
+
+    
+
+
+    
+
+    //Handles the user signin
+    //Calls Init Game
+    async function userSignIn(){
+        const userCredential = await firebase.auth().signInAnonymously();
+        console.log('Additional user info: ', userCredential.additionalUserInfo);
+        let newUser = userCredential.additionalUserInfo.isNewUser;
+
+        //Attempt to Authorize User
+        firebase.auth().onAuthStateChanged((user) =>{
+
+            if(user){
+                playerId = user.uid;
+                playerRef = firebase.database().ref(`players/${playerId}`);
+                playerGameRef = firebase.database().ref(`game/players/${playerId}`);
+
+
+                let time =  Date.now();
+                let date = new Date().toLocaleString();
+                //drawCount -> number of cards to draw
+
+                playerGameRef.set({
+                    id:playerId,
+                    turn:false,
+                    cards:[],
+                    time,
+                    date,
+                    drawCount:0
+                });
+
+                playerGameRef.onDisconnect().remove();
+
+
+                
+
+                if(newUser){
+
+                    let name = createName();
+                    //playerNameInput.value = name; //updates input field in DOM
+                    let time =  Date.now();
+
+                    //updates database, adds player info
+                    playerRef.set({
+                        id:playerId,
+                        name,
+                        cards:[],
+                        turn:false,
+                        time,
+                        onlineStatus:true,
+                        wins:0
+        
+                    });
+
+                }else{
+                    //If the entry was deleted, parameters will need to be set
+                    //ID automatically set
+
+                    //set name
+                    firebase.database().ref(`players/${playerId}/name`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+                        } else {
+            
+                            playerRef.update({
+                                name:createName()
+                            });
+                        }
+                    });
+
+                    //set cards
+                    firebase.database().ref(`players/${playerId}/cards`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+                        } else {
+            
+                            playerRef.update({
+                                cards:[]
+                            });
+                        }
+                    });
+
+                    //set wins
+                    firebase.database().ref(`players/${playerId}/wins`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+                        } else {
+            
+                            playerRef.update({
+                                wins:0
+                            });
+                        }
+                    });
+
+                    
+                    let time =  Date.now();
+    
+                    playerRef.update({
+                        turn:false,
+                        time,
+                        onlineStatus:true,
+                    })
+                }
+
+                //when the player disconnects
+                playerRef.onDisconnect().update({
+                    onlineStatus:false
+                });
+
+                //Begin the Game
+                initGame();
+
+
+
+            }else{
+                console.log("FIREBASE AUTH, FAILED TO AUTHORIZE")
+            }
+        });
+
+        //Anon log-in Failure
+        firebase.auth().signInAnonymously().catch((error) =>{
+            var errorCode = error.code;
+            var errorMessage = error.message;
+      
+            console.log(errorCode,errorMessage);
+          });
+
+
+    }
+
+    //Player Name Change
+    document.getElementById("refreshName").onclick =function(){
+        let newName = createName();
+        //playerNameInput.value = newName;
+        playerRef.update({
+            name:newName
+        });
+    };
+    //Player Name Change
+    playerNameInput.addEventListener("change", (e)=>{
+        const newName = e.target.value || createName();
+        //playerNameInput.value = newName;
+        playerRef.update({
+            name:newName
+        });
+    })
+
+
+
+    //RUN
+    userSignIn();
+    //hideColorPicker();
+
+    
+
+})();
 
