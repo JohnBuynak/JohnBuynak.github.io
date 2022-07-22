@@ -3,6 +3,8 @@
 var selectedCard = undefined;
 var cardCollection = [];
 var gameboardCard = undefined;
+var reverse = false;
+var drawCount = 0;
 
 class Card{
 
@@ -232,6 +234,9 @@ function updateCardMargins(){
         }
 }
 
+//TODO
+function getPlayOrder(){}
+function passDrawTwoFour(){}
 
 
 
@@ -256,9 +261,8 @@ ex: (function(){})();
     const gamePlayersRef = firebase.database().ref(`game/players`); //all players
 
     
-    let players = []; //local list of players
+    let players = {}; //local list of players
     let playerElements = {}; //DOM elements for each player
-    let playerOrderList = {}; //play order
 
     
     //DOM references
@@ -341,8 +345,10 @@ ex: (function(){})();
                     console.log(snapshot.val());
 
                     if(snapshot.val()){
+                        console.log("GAME STARTED STATUS:True");
                         return true;
                     }else{
+                        console.log("GAME STARTED STATUS:False");
                         return false;
                     }
                     
@@ -362,19 +368,48 @@ ex: (function(){})();
             //Deal Cards to All Players -> set trigger
             //Set GameboardCard
 
-            if(isGameStarted()){
+            if(!isGameStarted()){
                 gameRef.update({
                     gameStarted:true
                 });
     
                 
-    
-                players.forEach((id) => {
-                    firebase.database().ref(`game/players/${id}`).update({
+                Object.keys(players).forEach(key => {
+                    firebase.database().ref(`game/players/${key}`).update({
                         drawCount:5
-                    })
-                })
+                    });
+                  });
+
+                // players.forEach((id) => {
+                //     firebase.database().ref(`game/players/${id}`).update({
+                //         drawCount:5
+                //     })
+                // })
             }
+        }
+
+        //PLAY CARD
+        document.getElementById("gameboardcard").onclick = function(){
+
+            if(selectedCard != undefined){
+
+                if(selectedCard.color == "multi"){
+                    showColorPicker();
+
+                }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
+
+                    //Play Card
+                    gameboardCard = selectedCard;
+                    updateGameCard();
+                    removeCard(selectedCard.id);
+                    updateCCDB(); //cards:cardCollection
+                    gameRef.update({
+                        gameCard:gameboardCard
+                     })
+
+                }
+            }
+
         }
 
 
@@ -451,12 +486,20 @@ ex: (function(){})();
 
 
         //Listener for all changes to this node- Players
-        allPlayersRef.on("value", (snapshot) => { 
-            console.log("ALL PLAYERS REF-- VALUE");
-            console.log(snapshot.val());
-        });
+
+
+
+        // allPlayersRef.on("value", (snapshot) => { 
+        //     console.log("ALL PLAYERS REF-- VALUE");
+        //     console.log(snapshot.val());
+        // });
 
         //allPlayersRef.on('child_added', (snapshot) => {});
+
+
+
+
+
 
 
 
@@ -509,21 +552,29 @@ ex: (function(){})();
         })
 
 
-        gamePlayersRef.on("value", (snapshot) => { 
-            console.log("GAME PLAYERS REF-- VALUE");
-            console.log(snapshot.val());
-        });
+
+
+        // gamePlayersRef.on("value", (snapshot) => { 
+        //     console.log("GAME PLAYERS REF-- VALUE");
+        //     console.log(snapshot.val());
+        // });
 
 
 
 
         gamePlayersRef.on("child_added", (snapshot) => {
+
             console.log("GAME PLAYERS REF-- CHILD ADDED");
             console.log(snapshot.val());
 
             let addedPlayer = snapshot.val();
+
+
             //Keep a local list of Players
-            players.push(addedPlayer.id);
+            //players.push(addedPlayer.id);
+
+            //Switch from array to object
+            players[addedPlayer.id] = addedPlayer.time;
 
             console.log("PLAYERS (LOCAL)");
             console.log(players);
@@ -533,15 +584,25 @@ ex: (function(){})();
             //playerorderlist -> pull times from db, order (reversed?) 
         });
 
+
+
+
+
         gamePlayersRef.on("child_removed", (snapshot) => {
             console.log("GAME PLAYERS REF-- CHILD Removed!");
             console.log(snapshot.val());
 
             let removedPlayer = snapshot.val();
 
+            //Switch from array to object
+
             //Remove Player from Players:
-            let toBeRemoved = (id) => id == removedPlayer.id;
-            players.splice(players.findIndex(toBeRemoved),1);
+            //let toBeRemoved = (id) => id == removedPlayer.id;
+            //players.splice(players.findIndex(toBeRemoved),1);
+
+            delete players[removedPlayer.id];
+
+
 
         });
 
