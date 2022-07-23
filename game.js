@@ -567,73 +567,134 @@ ex: (function(){})();
                 }
             });
         }
-        
 
-        //DOM within Init
-
-        document.getElementById("startGame").onclick = function(){
-
-            //Game = Started
-            //Deal Cards to All Players -> set trigger
-            //Set GameboardCard
-            
+        function startGame(){
 
             if(!gameStarted){
-
                 gameboardCard = new Card(forceNumber=true);
-                gameStarted = true;
-                gameRef.update({
-                    gameStarted:true,
-                    gameCard:gameboardCard
-                });
-    
-                //Random Key turn = true
-                let rKey = Object.keys(players)[getRandomInt(Object.keys(players).length)];
-                
-
-                Object.keys(players).forEach(key => {
-
-                    if(key == rKey){
-                        //your turn
-                        
-
-                        firebase.database().ref(`game/players/${key}`).update({
-                            drawCount:5,
-                            turn:true
-                        });
-                    }else{
-                        firebase.database().ref(`game/players/${key}`).update({
-                            drawCount:5
-                        });
-                    }
+                    gameStarted = true;
+                    gameRef.update({
+                        gameStarted:true,
+                        gameCard:gameboardCard
+                    });
+        
+                    //Random Key turn = true
+                    let rKey = Object.keys(players)[getRandomInt(Object.keys(players).length)];
                     
 
-                  });
+                    Object.keys(players).forEach(key => {
 
-                // players.forEach((id) => {
-                //     firebase.database().ref(`game/players/${id}`).update({
-                //         drawCount:5
-                //     })
-                // })
+                        if(key == rKey){
+                            //your turn
+                            
+
+                            firebase.database().ref(`game/players/${key}`).update({
+                                drawCount:5,
+                                turn:true
+                            });
+                        }else{
+                            firebase.database().ref(`game/players/${key}`).update({
+                                drawCount:5
+                            });
+                        }
+                        
+
+                    });
             }
         }
 
-        document.getElementById("newGame").onclick = function(){
-            gameboardCard = new Card(false,true);
-            gameboardCard.color = "red";
-                gameStarted = true;
-                gameRef.update({
-                    gameStarted:false,
-                    gameCard:gameboardCard
-                });
-            updateGameCard();
+
+
+        async function restartGame(){
+
+            // gameboardCard = new Card(false,true);
+            // gameboardCard.color = "red";
+            //     gameStarted = true;
+            //     gameRef.update({
+            //         gameStarted:false,
+            //         gameCard:gameboardCard
+            //     });
+
+            // updateGameCard();
 
             Object.keys(players).forEach(key => {
                 
                 firebase.database().ref(`game/players/${key}`).remove();
                 
             });
-            location.reload();
+            
+            //location.reload();
+            await new Promise(r => setTimeout(r, 2000));
+
+            startGame();
+
+        }
+        
+
+        //DOM within Init
+
+        document.getElementById("startGame").onclick = function(){
+
+            startGame();
+            //Game = Started
+            //Deal Cards to All Players -> set trigger
+            //Set GameboardCard
+            
+
+            // if(!gameStarted){
+
+            //     gameboardCard = new Card(forceNumber=true);
+            //     gameStarted = true;
+            //     gameRef.update({
+            //         gameStarted:true,
+            //         gameCard:gameboardCard
+            //     });
+    
+            //     //Random Key turn = true
+            //     let rKey = Object.keys(players)[getRandomInt(Object.keys(players).length)];
+                
+
+            //     Object.keys(players).forEach(key => {
+
+            //         if(key == rKey){
+            //             //your turn
+                        
+
+            //             firebase.database().ref(`game/players/${key}`).update({
+            //                 drawCount:5,
+            //                 turn:true
+            //             });
+            //         }else{
+            //             firebase.database().ref(`game/players/${key}`).update({
+            //                 drawCount:5
+            //             });
+            //         }
+                    
+
+            //       });
+
+
+            
+        }
+
+        document.getElementById("newGame").onclick = function(){
+
+            restartGame();
+            // gameboardCard = new Card(false,true);
+            // gameboardCard.color = "red";
+            //     gameStarted = true;
+            //     gameRef.update({
+            //         gameStarted:false,
+            //         gameCard:gameboardCard
+            //     });
+            // updateGameCard();
+
+            // Object.keys(players).forEach(key => {
+                
+            //     firebase.database().ref(`game/players/${key}`).remove();
+                
+            // });
+            // location.reload();
         }
 
         //PLAY CARD
@@ -978,10 +1039,20 @@ ex: (function(){})();
                         updateCCDB(); //cards:cardCollection  drawCount:0
                     }
                 }
-                
-    
-                
             }
+
+            //Update PlayerRef
+
+            //snapshot.val().name;
+
+            playerRef.update({
+                name:snapshot.val().name,
+                cards:cardCollection,
+                drawCount:0, // safe?
+                turn: yourTurn,
+                wins:snapshot.val().wins
+
+            });
             
 
         })
@@ -1120,14 +1191,17 @@ ex: (function(){})();
                 let date = new Date().toLocaleString();
                 //drawCount -> number of cards to draw
 
-                playerGameRef.set({
-                    id:playerId,
-                    turn:false,
-                    cards:[],
-                    time,
-                    date,
-                    drawCount:0
-                });
+
+                // //initial Set
+                // playerGameRef.set({
+                //     id:playerId,
+                //     turn:false,
+                //     cards:[],
+                //     time,
+                //     date,
+                //     drawCount:0
+                // });
+
 
                 playerGameRef.onDisconnect().remove();
 
@@ -1139,67 +1213,198 @@ ex: (function(){})();
                     let name = createName();
                     //playerNameInput.value = name; //updates input field in DOM
                     let time =  Date.now();
+                    let date = new Date().toLocaleString();
+
 
                     //updates database, adds player info
                     playerRef.set({
                         id:playerId,
                         name,
-                        cards:[],
-                        turn:false,
                         time,
                         onlineStatus:true,
-                        wins:0
-        
+                        wins:0,
+                        cards:[],
+                        turn:false,
+                        drawCount:0
                     });
+
+
+                    //initial Set
+                    playerGameRef.set({
+                        id:playerId,
+                        turn:false,
+                        cards:[],
+                        time,
+                        date,
+                        drawCount:0
+                    });
+
 
                 }else{
                     //If the entry was deleted, parameters will need to be set
                     //ID automatically set
 
+                    let playerRefName;
+                    let playerRefCards;
+                    let playerRefWins;
+                    let playerRefTime;
+                    let playerRefDate;
+
                     //set name
                     firebase.database().ref(`players/${playerId}/name`).get().then((snapshot) => {
                         if (snapshot.exists()) {
                             console.log(snapshot.val());
+
+                            playerGameRef.update({
+                                name: snapshot.val()
+                            })
+
                         } else {
-            
+                            let name = createName();
+
                             playerRef.update({
-                                name:createName()
+                                name
+                            });
+
+                            playerGameRef.update({
+                                name
+                            })
+
+                            
+                        }
+                    });
+
+
+
+                    //set wins
+                    firebase.database().ref(`players/${playerId}/wins`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+
+                            console.log(snapshot.val());
+
+                            playerGameRef.update({
+                                wins:snapshot.val()
+                            });
+
+                        } else {
+                            playerRef.update({
+                                wins:0
+                            });
+
+                            playerGameRef.update({
+                                wins:0
                             });
                         }
                     });
 
+
+
+                    firebase.database().ref(`players/${playerId}/time`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+
+                        } else {
+
+                            playerRef.update({
+                                time,
+                                date:new Date(time).toLocaleString()
+                            });
+
+                        }
+                    });
+
+
+
+                    //PlayerRef, Game Specific -> Refresh Safety
+                    
                     //set cards
                     firebase.database().ref(`players/${playerId}/cards`).get().then((snapshot) => {
                         if (snapshot.exists()) {
+
                             console.log(snapshot.val());
+
+                            playerGameRef.update({
+                                cards:snapshot.val()
+                            });
+
                         } else {
-            
+
+                            playerRef.update({
+                                cards:[]
+                            });
+
+                            playerGameRef.update({
+                                cards:[]
+                            });
+
+                        }
+                    });
+
+                     //set turn
+                     firebase.database().ref(`players/${playerId}/turn`).get().then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+
+                            playerGameRef.update({
+                                turn:snapshot.val()
+                            });
+
+
+                        } else {
+
+                            playerGameRef.update({
+                                turn:false
+                            });
+
+
                             playerRef.update({
                                 cards:[]
                             });
                         }
                     });
 
-                    //set wins
-                    firebase.database().ref(`players/${playerId}/wins`).get().then((snapshot) => {
+                    //set drawCount
+                    firebase.database().ref(`players/${playerId}/drawCount`).get().then((snapshot) => {
                         if (snapshot.exists()) {
+
                             console.log(snapshot.val());
-                        } else {
-            
-                            playerRef.update({
-                                wins:0
+
+                            playerGameRef.update({
+                                drawCount:snapshot.val()
                             });
+
+
+                        } else {
+
+                            playerRef.update({
+                                cards:[]
+                            });
+
+                            playerGameRef.update({
+                                drawCount:0
+                            });
+
                         }
                     });
 
-                    
-                    let time =  Date.now();
-    
+
+
+
                     playerRef.update({
-                        turn:false,
-                        time,
                         onlineStatus:true,
-                    })
+                        turn:false // FIX
+                    });
+
+
+                    //Exisiting User
+                    //initial Set
+                    playerGameRef.update({
+                        id:playerId,
+                        time,
+                        date,
+                    });
+
+
                 }
 
                 //when the player disconnects
@@ -1232,7 +1437,7 @@ ex: (function(){})();
     document.getElementById("refreshName").onclick =function(){
         let newName = createName();
         //playerNameInput.value = newName;
-        playerRef.update({
+        playerGameRef.update({
             name:newName
         });
     };
@@ -1240,7 +1445,7 @@ ex: (function(){})();
     playerNameInput.addEventListener("change", (e)=>{
         const newName = e.target.value || createName();
         //playerNameInput.value = newName;
-        playerRef.update({
+        playerGameRef.update({
             name:newName
         });
     })
