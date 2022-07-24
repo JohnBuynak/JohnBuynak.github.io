@@ -8,6 +8,7 @@ var gameDrawNumber = 0;
 var myTurn = false;
 var gameStarted = false;
 var mustPlayDrawTwo = false;
+var playedLastCard = false;
 
 class Card{
 
@@ -60,6 +61,8 @@ class Card{
 
 
     }
+    
+
 
     getCard(){
         return this.color + this.type
@@ -306,6 +309,14 @@ ex: (function(){})();
             });
         }
 
+        function gameOverCheck(){
+            if(cardCollection.length==0){
+                playedLastCard = true;
+            }
+            playerRef.update({});
+        }
+
+
         //everyone draws three cards
         function drawThree(){
             Object.keys(players).forEach(key => {
@@ -448,10 +459,17 @@ ex: (function(){})();
         }
 
 
-        function onDraw(){
+        function onDraw(forceChange=false,type,color,id){
             let card = new Card(); // create new
-            selectedCard = undefined; // reset selected card to undef
+            
+            if(forceChange){
+                card.type = type;
+                card.color = color;
+                card.id = id;
+            }
             cardCollection.push(card); //add to local collection
+
+            selectedCard = undefined; // reset selected card to undef
 
             let imageSource = "/images/" + card.getCard() + ".png" //image location
             let newCard = document.createElement("img");
@@ -498,9 +516,11 @@ ex: (function(){})();
                                             removeCard(selectedCard.id);
 
                                             if(gameboardCard.type == "draw2"){
+
                                                 updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
                                                 drawTwo();
                                             }else{
+
                                                 getNextPlayer(); //updates DB, next player turn = true
                                                 //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
                                                 completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
@@ -529,7 +549,8 @@ ex: (function(){})();
                                             completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
                                         }
                                     }
-                                    
+
+                                    gameOverCheck(); //played last card
                                 }
                                 
                             }
@@ -539,6 +560,8 @@ ex: (function(){})();
                     selectedCard = card;
                     console.log(selectedCard);
                 }
+
+                
             }
 
             document.getElementById("scroller").appendChild(newCard);
@@ -754,6 +777,8 @@ ex: (function(){})();
                                 completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
                             }
                         }
+
+                        gameOverCheck(); //played last card
                         
                     }
 
@@ -817,7 +842,8 @@ ex: (function(){})();
                 }
                 if(queueDrawFour){
                     drawFour();
-                    console.log("*****   called drawThree   ******")
+                    console.log("*****   called drawThree   ******");
+                    gameOverCheck(); //played last card
                 }
                 
             }
@@ -845,7 +871,8 @@ ex: (function(){})();
                 }
                 if(queueDrawFour){
                     drawFour();
-                    console.log("*****   called drawThree   ******")
+                    console.log("*****   called drawThree   ******");
+                    gameOverCheck(); //played last card
                 }
                 
             }
@@ -873,7 +900,8 @@ ex: (function(){})();
                 }
                 if(queueDrawFour){
                     drawFour();
-                    console.log("*****   called drawThree   ******")
+                    console.log("*****   called drawThree   ******");
+                    gameOverCheck(); //played last card
                 }
                 
             }
@@ -901,7 +929,8 @@ ex: (function(){})();
                 }
                 if(queueDrawFour){
                     drawFour();
-                    console.log("*****   called drawThree   ******")
+                    console.log("*****   called drawThree   ******");
+                    gameOverCheck(); //played last card
                 }
                 
             }
@@ -1013,7 +1042,8 @@ ex: (function(){})();
                     mustPlayDrawTwo:true,
                     reverse:false,
                     drawNumber:0,
-                    gameStarted:false
+                    gameStarted:false,
+                    gameOver:false
                 });
             }
         });
@@ -1021,12 +1051,23 @@ ex: (function(){})();
 
         playerGameRef.on("value", (snapshot) => {
 
+            let value=snapshot.val();
+
+
+
+            console.log("PLAYERREF VALUE ----");
+            console.log(snapshot.val());
+            console.log("CARDS");
+            console.log(snapshot.val().cards);
+
+
+
             //your turn?
-            let yourTurn = snapshot.val().turn;
+            let yourTurn = value.turn;
             //HANDLE TURN
             myTurn=yourTurn;
 
-            let drawNum = snapshot.val().drawCount;
+            let drawNum = value.drawCount;
             console.log("DRAW NUMBER:");
             console.log(drawNum);
 
@@ -1041,18 +1082,47 @@ ex: (function(){})();
                 }
             }
 
+            //GAME WIN CONDITION / GAME OVER:
+            //if(cardCollection.length == 0) -> triggers painful loop
+
+            if(playedLastCard){
+                //wins ++
+                //Game Over Pop Up
+                playerGameRef.update({
+                    wins:firebase.database.ServerValue.increment(1)
+                })
+
+                //gameRef.gameOver = true
+                console.log("GAME OVER")
+
+
+                gameRef.update({
+                    gameOver:true,
+                    gameWinner:value.name
+                })
+
+                playedLastCard = false;
+            }
+
             //Update PlayerRef
 
             //snapshot.val().name;
 
-            playerRef.update({
-                name:snapshot.val().name,
-                cards:cardCollection,
-                drawCount:0, // safe?
-                turn: yourTurn,
-                wins:snapshot.val().wins
+            console.log("SNAPSHOT NAME");
+            console.log(value.name);
 
-            });
+
+            if(value.name != undefined && value.turn != undefined && value.wins != undefined){
+                playerRef.update({
+                    name:value.name,
+                    cards:cardCollection,
+                    drawCount:0, // safe?
+                    turn: yourTurn,
+                    wins:value.wins
+    
+                });
+            }
+            
             
 
         })
@@ -1134,6 +1204,8 @@ ex: (function(){})();
             reverse = game.reverse;
             
             updateGameCard(); //Updates Src for Image
+
+            let gameOver = snapshot.val().gameOver;
         })
 
 
@@ -1205,7 +1277,115 @@ ex: (function(){})();
 
                 playerGameRef.onDisconnect().remove();
 
-
+                function onDraw(forceChange=false,type,color,id){
+                    let card = new Card(); // create new
+                    
+                    if(forceChange){
+                        card.type = type;
+                        card.color = color;
+                        card.id = id;
+                    }
+                    cardCollection.push(card); //add to local collection
+        
+                    selectedCard = undefined; // reset selected card to undef
+        
+                    let imageSource = "/images/" + card.getCard() + ".png" //image location
+                    let newCard = document.createElement("img");
+                    newCard.className = "cardImage";
+                    newCard.src = imageSource; 
+                    newCard.id = card.id
+        
+                    //click on the DOM image
+                    newCard.onclick = function(){
+        
+                        if(myTurn){
+        
+                            const collection =  document.getElementsByClassName("cardImage"); //all card images
+        
+                            //stack cards
+                            for(let i = 0; i < collection.length; i++){
+                                collection[i].style.top = "0px"
+                                collection[i].style.zIndex = i.toString();
+                            }
+            
+                            //selected card moves up
+                            newCard.style.top = "-20px"
+                            hideColorPicker();
+        
+                            //is clicked card already selected?
+                            if(selectedCard == card){
+                                if(selectedCard != undefined){
+                                    if(selectedCard.color == "multi"){
+                                        showColorPicker();
+            
+                                    }else if(selectedCard.color == gameboardCard.color || selectedCard.type == gameboardCard.type){
+                                        //Play Card
+        
+                                        if(myTurn){
+                                            if(mustPlayDrawTwo){
+                                                if(selectedCard.type=="draw2"){
+                                                    gameboardCard = selectedCard;
+                                                    //update gamecard and gameref before other updates
+                                                    gameRef.update({
+                                                        gameCard:gameboardCard
+                                                    });
+                
+                                                    updateGameCard(); //Updates Src for Image
+                                                    removeCard(selectedCard.id);
+        
+                                                    if(gameboardCard.type == "draw2"){
+        
+                                                        updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                                                        drawTwo();
+                                                    }else{
+        
+                                                        getNextPlayer(); //updates DB, next player turn = true
+                                                        //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                                                        completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+                                                    }
+                                                }
+                                            }else{
+                                                gameboardCard = selectedCard;
+                                                //update gamecard and gameref before other updates
+                                                gameRef.update({
+                                                    gameCard:gameboardCard
+                                                });
+            
+                                                updateGameCard(); //Updates Src for Image
+                                                removeCard(selectedCard.id);
+            
+                                                if(gameboardCard.type == "draw2"){
+                                                    updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                                                    drawTwo();
+                                                }else if(gameboardCard.type == "reverse"){
+                                                    reverseOrder(); //local reverse = !reverse, gameref updates reverse
+                                                }else if(gameboardCard.type == "skip"){
+                                                    skip(); //double deck player update turn true, myTurn = false
+                                                }else{
+                                                    getNextPlayer(); //updates DB, next player turn = true
+                                                    //updateCCDB(); //playerGameRef  cards:cardCollection  drawCount 0
+                                                    completeTurn(); //playerGameRef  cards:cardCollection  drawCount 0 turn false
+                                                }
+                                            }
+        
+                                            gameOverCheck(); //played last card
+                                        }
+                                        
+                                    }
+                                }
+                            }
+        
+                            selectedCard = card;
+                            console.log(selectedCard);
+                        }
+        
+                        
+                    }
+        
+                    document.getElementById("scroller").appendChild(newCard);
+                    updateCardMargins();
+        
+                }
                 
 
                 if(newUser){
@@ -1321,11 +1501,18 @@ ex: (function(){})();
                     firebase.database().ref(`players/${playerId}/cards`).get().then((snapshot) => {
                         if (snapshot.exists()) {
 
-                            console.log(snapshot.val());
+                            let cards = snapshot.val();
+                            console.log(cards);
 
                             playerGameRef.update({
                                 cards:snapshot.val()
                             });
+
+                            cards.forEach(card => {
+                                onDraw(true,card.type,card.color,card.id )
+                            })
+                            //cardCollection = 
+
 
                         } else {
 
